@@ -3,7 +3,7 @@ package org.amnh.cbc.perpendicularDistanceCalculator;
 ** File: PerpepndicularDistanceCalculator.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
 ** Creation Date: 2004-10-10
-** Revision Date: 2005-10-19
+** Revision Date: 2007-02-06
 **
 ** version 1.1_RC_1 [2005-11-09] Release candidate packaged for distribution (P.J.Ersts)
 **
@@ -472,50 +472,6 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
         getContentPane().add(outputPanel, BorderLayout.CENTER);
         getContentPane().add(buttons, BorderLayout.SOUTH);
         validate();
-	}
-	
-	private void displayInfo() {
-		String messageText = "<HTML><STYLE>body {font-size: 12pt;}</STYLE><BODY>"+
-							 "This is release candidate 2 of the Perpendicular Distance Calculator "+
-							 "written by Peter J. Ersts, Project Specialist with the <a HREF=\"http://cbc.amnh.org\">Center for "+
-							 "Biodiversity and Conservation</a> at the <a HREF=\"http://amnh.org\">American Museum of Natural History</a>. "+
-							 "Eric Albert, Tim Collins, Ned Horning, Kevin Koy, Matt Leslie, and Marco Polin "+
-							 "should be acknowledged for their contributions which have taken the form of code, constructive criticism, "+
-							 "beta-testing and moral support. This application implements Eric Albert's BrowserLauncher class.<BR><BR>"+
-							 "Questions, comments and bug reports can be posted on: <BR>"+
-							 "<a HREF=\"http://geospatial.amnh.org\">http://geospatial.amnh.org</a><BR>"+
-							 "The source code for this program is available upon request.<BR><BR>"+
-							 "This work has been partially supported by NASA under award No. NAG5-8543. "+
-							 "Additionally, this program was prepared by the the above author(s) under "+
-							 "award No. NA04AR4700191 from the National Oceanic and Atmospheric "+
-							 "Administration, U.S. Department of Commerce.  The statements, findings, "+
-							 "conclusions, and recommendations are those of the author(s) and do not "+
-							 "necessarily reflect the views of the National Oceanic and Atmospheric "+
-							 "Administration or the Department of Commerce.</BODY></HTML>";
-		JDialog info = new JDialog(this, true);
-		info.setSize(450,375);
-		info.setTitle("About");
-		info.setResizable(false);
-		info.getContentPane().setBackground(Color.WHITE);
-		info.setBackground(new Color(255,255,255));
-		info.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		info.setLocation((int)getLocationOnScreen().getX() + (getWidth()/2) - (info.getWidth()/2), (int)getLocationOnScreen().getY() + (getHeight()/2) - (info.getHeight()/2));
-		
-		JEditorPane text = new JEditorPane();
-		text.addHyperlinkListener(this);
-		text.setContentType("text/html");
-		text.setText(messageText);
-		text.setEditable(false);
-		
-		JPanel logos = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 0));
-		logos.setBackground(new Color(255, 255, 255));
-		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("cbc-blue-sm.jpg"))));
-		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("nasa-sm.jpg"))));
-		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("noaa-sm.jpg"))));
-		
-		info.getContentPane().add(logos, BorderLayout.SOUTH);
-		info.getContentPane().add(text, BorderLayout.CENTER);
-		info.setVisible(true);
 	}
 	
 	private boolean emptyFieldsExist() {
