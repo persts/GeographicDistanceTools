@@ -1,19 +1,8 @@
-package org.amnh.cbc.perpendicularDistanceCalculator;
 /*
-** File: PerpepndicularDistanceCalculator.java
+** File: PerpepndicularDistanceCalculatorGui.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
 ** Creation Date: 2004-10-10
 ** Revision Date: 2007-02-06
-**
-** version 1.1_RC_1 [2005-11-09] Release candidate packaged for distribution (P.J.Ersts)
-**
-** version 1.1_PR [2005-10-19] Allow selection of only one row at a time in output area (P.J.Ersts)
-**
-** version 1.1_PR [2005-10-13] Fixed minor inconsistency with export function (P.J.Ersts)
-**							   Disabled users ability to modify cells in output area (P.J.Ersts)
-**							   Added intermediate great circle point calculation (P.J.Ersts)
-**
-** version 1.0 [2004-11-25] (P.J.Ersts)
 **
 ** Copyright (c) 2004,2005 American Museum of Natural History. All rights reserved.
 ** 
@@ -41,7 +30,7 @@ package org.amnh.cbc.perpendicularDistanceCalculator;
 ** Administration or the Department of Commerce.
 **
 **/
-
+package org.amnh.cbc.perpendicularDistanceCalculator;
 
 /**
  *
@@ -54,26 +43,37 @@ package org.amnh.cbc.perpendicularDistanceCalculator;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import java.text.DecimalFormat;
+
 import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.event.HyperlinkListener;
-import javax.swing.event.HyperlinkEvent;
 
-import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.File;
+import java.io.BufferedWriter;
 
-import org.amnh.cbc.core.SimpleFileFilter;
+import org.amnh.cbc.core.VersionCheck;
 import org.amnh.cbc.core.SplashScreen;
-import org.amnh.cbc.geospatial.core.SphericalFunctionEngine;
+import org.amnh.cbc.core.SimpleFileFilter;
 
-import edu.stanford.ejalbert.BrowserLauncher;
+import org.amnh.cbc.geospatial.SphericalFunctionEngine;
 
-public class PerpendicularDistanceCalculator extends JFrame implements HyperlinkListener {
+/**
+ * This class is the main window of the Perpendicular Distance Calculator
+ * @author Peter J. Ersts
+ *
+ */
+public class PerpendicularDistanceCalculatorGui extends JFrame implements ActionListener {
+	/* Current Version Number */
+	private static final String version = "1.2.0";
+
+	/** \brief Instance of the VersionCheck class */
+	private VersionCheck versionCheck;
+	
 	private JTextField transectLegID;
 	private JTextField transectLegStartLongitude;
 	private JTextField transectLegStartLatitude;
@@ -90,6 +90,20 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
 	private JTable displayArea;
 	private DefaultTableModel tableModel;
 
+	private JMenu fileMenu;
+    private JMenu calculationMenu;
+    private JMenuItem gcdItem;
+    private JMenuItem igcpItem;
+    private JMenuItem exitItem;
+    private JMenuItem versionItem;
+    private JMenuItem aboutItem;
+    
+	private JButton exportButton;
+	private JButton runButton;
+	private JButton clearButton;
+	private JButton clearButton2;
+	private JButton clearButton3;
+	
 	private String distanceUnits[][] = {{"meters", "m"},
 										{"kilometers", "km"},
 										{"nautical mi", "nm"},
@@ -99,7 +113,19 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
 	private String spheroids[][] = {{"WGS84","6378137"},
 			 						{"User Defined", "0"}};
 								
-	public PerpendicularDistanceCalculator() {
+	/**
+	 * Constructor
+	 *
+	 */
+	public PerpendicularDistanceCalculatorGui() {
+		SplashScreen SS = new SplashScreen(this, "resources/SplashScreenGraphic-PDC.jpg", 3500);
+        Thread splashThread = new Thread(SS, "SplashThread");
+        splashThread.start();
+        
+        versionCheck = new VersionCheck(this, version, "http://geospatial.amnh.org/open_source/pdc/version", "http://geospatial.amnh.org/open_source/pdc/download.php", 4000);
+        Thread versionThread = new Thread(versionCheck, "VersionThread");
+        versionThread.start();
+		
 		/*
 		 * Build main window
 		 */
@@ -107,9 +133,6 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
 		int frameHeight = 400;
 		Color baseColor = new Color(234,234,234);
         Dimension defaultDimension = new Dimension(120,20);
-		SplashScreen SS = new SplashScreen("SplashScreenGraphic-PDC.jpg", this);
-        Thread splashThread = new Thread(SS, "SplashThread");
-        splashThread.start();
         
 		setTitle("Perpendicular Distance Calculator");
         setResizable(false); /* Not good programing, but, for now the way it is...*/
@@ -122,44 +145,28 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
          * Menu Layout
          */
 		JMenuBar mBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        JMenu calculationMenu = new JMenu("Calculations");
-        JMenuItem gcdItem = new JMenuItem("Great Circle Distance");
-        JMenuItem igcpItem = new JMenuItem("Intermediate Great Circle Point");
-        JMenuItem exitItem = new JMenuItem("Exit");
-        JMenuItem aboutItem = new JMenuItem("About");
+        fileMenu = new JMenu("File");
+        calculationMenu = new JMenu("Calculations");
+        gcdItem = new JMenuItem("Great Circle Distance");
+        igcpItem = new JMenuItem("Intermediate Great Circle Point");
+        exitItem = new JMenuItem("Exit");
+        versionItem = new JMenuItem("Version");
+        aboutItem = new JMenuItem("About");
         
-        gcdItem.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed( ActionEvent e) {
-                    	new GCDWindow();
-                    }
-        });
+        gcdItem.addActionListener(this);
         calculationMenu.add(gcdItem);
-        
-        igcpItem.addActionListener(
-        		new ActionListener() {
-        			public void actionPerformed( ActionEvent e) {
-        				new IGCPWindow();
-        			}
-		});
+     
+        igcpItem.addActionListener(this);
         calculationMenu.add(igcpItem);
         
-        exitItem.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed( ActionEvent e) {
-                    	System.exit(0);
-                    }
-        });
+        exitItem.addActionListener(this);
         fileMenu.add(exitItem);
         
         JMenu aboutMenu = new JMenu("About");
-        aboutItem.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed( ActionEvent e) {
-                    	displayInfo();
-                    }
-        });
+        versionItem.addActionListener(this);
+        aboutItem.addActionListener(this);
+        aboutMenu.add(versionItem);
+        aboutMenu.addSeparator();
         aboutMenu.add(aboutItem);
 
         mBar.add(fileMenu);
@@ -224,7 +231,6 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
 		label3.setFont(new Font(null, Font.ITALIC, 12));
 		c.gridx = 5;
 		inputPanel.add(label3, c);
-		
 		
 		//Row 1
 		c.gridy = 1;
@@ -420,44 +426,17 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
          * Button Bar Layout
          */
 		JPanel buttons = new JPanel();
-		JButton exportButton = new JButton("Export");
-		exportButton.addActionListener(
-				new ActionListener() {
-					public void actionPerformed ( ActionEvent e) {
-							export();
-					}
-		});
-		JButton clearButton = new JButton("Clear All");
-		clearButton.addActionListener(
-				new ActionListener() {
-					public void actionPerformed ( ActionEvent e) {
-						for(int x = tableModel.getRowCount()-1; x >= 0; x--)
-							tableModel.removeRow(x);
-					}
-		});
-		JButton clearButton2 = new JButton("Clear Last Row");
-		clearButton2.addActionListener(
-				new ActionListener() {
-					public void actionPerformed ( ActionEvent e) {
-						if(tableModel.getRowCount() != 0)
-							tableModel.removeRow(tableModel.getRowCount()-1);
-					}
-		});
-		JButton clearButton3 = new JButton("Clear Selected Row");
-		clearButton3.addActionListener(
-				new ActionListener() {
-					public void actionPerformed ( ActionEvent e) {
-						if(tableModel.getRowCount() != 0 && displayArea.getSelectedRow() != -1)
-							tableModel.removeRow(displayArea.getSelectedRow());
-					}
-		});		
-		JButton runButton = new JButton("Process OBS");
-		runButton.addActionListener(
-				new ActionListener() {
-					public void actionPerformed ( ActionEvent e) {
-						processObservation();
-					}
-		});
+		exportButton = new JButton("Export");
+		exportButton.addActionListener(this);
+		clearButton = new JButton("Clear All");
+		clearButton.addActionListener(this);
+		clearButton2 = new JButton("Clear Last Row");
+		clearButton2.addActionListener(this);
+		clearButton3 = new JButton("Clear Selected Row");
+		clearButton3.addActionListener(this);
+		runButton = new JButton("Process OBS");
+		runButton.addActionListener(this);
+
 		buttons.add(exportButton);
 		buttons.add(clearButton);
 		buttons.add(clearButton2);
@@ -472,8 +451,46 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
         getContentPane().add(outputPanel, BorderLayout.CENTER);
         getContentPane().add(buttons, BorderLayout.SOUTH);
         validate();
-	}
+	} //Constructor
 	
+	/**
+	 * Require method to implement ActionListener
+	 */
+    public void actionPerformed(ActionEvent evt) {
+        Object obj = evt.getSource();
+        if(obj == aboutItem)
+        	new About(this, version);
+        else if(obj == clearButton) {
+			for(int x = tableModel.getRowCount()-1; x >= 0; x--)
+				tableModel.removeRow(x);        	
+        }
+        else if(obj == clearButton2) {
+        	if(tableModel.getRowCount() != 0)
+        		tableModel.removeRow(tableModel.getRowCount()-1);
+        }
+        else if(obj == clearButton3) {
+			if(tableModel.getRowCount() != 0 && displayArea.getSelectedRow() != -1)
+				tableModel.removeRow(displayArea.getSelectedRow());
+        }
+        else if(obj == exitItem)
+        	System.exit(0);
+        else if(obj == exportButton)
+        	export();
+        else if(obj == gcdItem)
+        	new GCDWindow();
+        else if(obj == igcpItem)
+        	new IGCPWindow();
+        else if(obj == runButton)
+        	processObservation();
+        else if(obj == versionItem)
+        	versionCheck.display();
+
+    }
+	
+    /**
+     * Check input fields for missing data
+     * @return		True if an imput field is found to be empty
+     */
 	private boolean emptyFieldsExist() {
 		if(transectLegID.getText().length() == 0)
 			return true;
@@ -501,6 +518,10 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
 		return false;
 	}
 	
+	/**
+	 * Export table data to a text file
+	 * @return		False if the table is empty or an error occurres
+	 */
 	private boolean export() {
 		if(tableModel.getRowCount() == 0)
 			return false;
@@ -539,16 +560,10 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
 		return true;
 	}
 	
-	public void hyperlinkUpdate(HyperlinkEvent evt) {
-		if(evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-			try {
-				BrowserLauncher.openURL(evt.getURL().toString());
-			}
-			catch (IOException e) {}
-		}
-			
-	}
-	
+	/**
+	 * Check all numeric input fields for possible invalid entries
+	 * @return		False if an invalid number is encountered
+	 */
 	private boolean numberDataValid() {
 		if(!SphericalFunctionEngine.validateNumericString(transectLegStartLongitude.getText()))
 			return false;
@@ -571,13 +586,17 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
 		return true;
 	}
 	
+	/**
+	 * Calculate perpendicular distance and dipslay result
+	 * @return		False if an error was detected within the input data
+	 */
 	private boolean processObservation() {
 		if(emptyFieldsExist()) {
 			JOptionPane.showMessageDialog(this, "All input fields must contain data","Empty Field Warning", JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
 		if(!numberDataValid()) {
-			JOptionPane.showMessageDialog(this, "A numberic field contains invalid characters","Number Field Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "A numeric field contains invalid characters","Number Field Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		
@@ -603,9 +622,5 @@ public class PerpendicularDistanceCalculator extends JFrame implements Hyperlink
 		tableModel.addRow(newRow);
 		
 		return true;
-	}
-	
-	public static void main(String[] args) {
-		new PerpendicularDistanceCalculator();
 	}
 }

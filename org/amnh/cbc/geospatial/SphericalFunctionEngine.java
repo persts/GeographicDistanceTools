@@ -1,4 +1,3 @@
-package org.amnh.cbc.geospatial.core;
 /*
 ** File: SphericalFunctionEngine.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
@@ -39,6 +38,7 @@ package org.amnh.cbc.geospatial.core;
 ** Administration or the Department of Commerce.
 **
 **/
+package org.amnh.cbc.geospatial;
 
 public class SphericalFunctionEngine {
 	static final int WGS84 = 6378137;

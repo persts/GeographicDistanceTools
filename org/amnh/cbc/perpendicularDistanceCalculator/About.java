@@ -2,7 +2,7 @@
 ** File: About.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
 ** Creation Date: 2007-02-06
-** Revision Date: 2007-02-06
+** Revision Date: 2007-02-07
 **
 ** Copyright (c) 2007, American Museum of Natural History. All rights reserved.
 ** 
@@ -62,17 +62,16 @@ public class About extends JDialog implements HyperlinkListener {
 	 * @param parent	Parent frame
 	 * @param modal		Boolean to indicate if this dialog should be modal
 	 */
-	About(JFrame parent) {
+	About(JFrame parent, String version) {
 		String messageText = "<HTML><STYLE>body {font-size: 12pt;}</STYLE><BODY>"+
-	 						"This is release candidate 2 of the Perpendicular Distance Calculator "+
+	 						"This is version "+ version +" of the Perpendicular Distance Calculator "+
  							"written by Peter J. Ersts, Project Specialist with the <a HREF=\"http://cbc.amnh.org\">Center for "+
  							"Biodiversity and Conservation</a> at the <a HREF=\"http://amnh.org\">American Museum of Natural History</a>. "+
  							"Eric Albert, Tim Collins, Ned Horning, Kevin Koy, Matt Leslie, and Marco Polin "+
  							"should be acknowledged for their contributions which have taken the form of code, constructive criticism, "+
  							"beta-testing and moral support. This application implements Eric Albert's BrowserLauncher class.<BR><BR>"+
  							"Questions, comments and bug reports can be posted on: <BR>"+
- 							"<a HREF=\"http://geospatial.amnh.org\">http://geospatial.amnh.org</a><BR>"+
- 							"The source code for this program is available upon request.<BR><BR>"+
+ 							"<a HREF=\"http://geospatial.amnh.org/open_source/pdc/comments.php\">http://geospatial.amnh.org</a><BR><BR>"+
  							"This work has been partially supported by NASA under award No. NAG5-8543. "+
  							"Additionally, this program was prepared by the the above author(s) under "+
  							"award No. NA04AR4700191 from the National Oceanic and Atmospheric "+

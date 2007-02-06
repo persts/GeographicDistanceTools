@@ -1,4 +1,3 @@
-package org.amnh.cbc.perpendicularDistanceCalculator;
 /*
 ** File: GCDWindow.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
@@ -33,6 +32,7 @@ package org.amnh.cbc.perpendicularDistanceCalculator;
 ** Administration or the Department of Commerce.
 **
 **/
+package org.amnh.cbc.perpendicularDistanceCalculator;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -50,7 +50,7 @@ import java.text.DecimalFormat;
 
 import javax.swing.*;
 
-import org.amnh.cbc.geospatial.core.SphericalFunctionEngine;
+import org.amnh.cbc.geospatial.SphericalFunctionEngine;
 
 public final class GCDWindow extends JFrame {
 	private SphericalFunctionEngine sfe;
