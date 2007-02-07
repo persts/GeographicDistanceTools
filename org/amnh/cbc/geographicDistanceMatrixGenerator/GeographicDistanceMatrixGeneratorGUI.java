@@ -106,6 +106,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 	private JButton browseFileButton;
 	private JMenuItem exitItem;
 	private JMenuItem aboutItem;
+	private JMenuItem versionItem;
 	private JTextArea matrixDisplay;
 	private JTextField filename;
 	private JTextField spheroidRadius;							
@@ -125,7 +126,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 	 * 
 	 */
 	public GeographicDistanceMatrixGeneratorGUI() {
-		SplashScreen SS = new SplashScreen(this, "SplashScreenGraphic-GDMG.jpg", 3500);
+		SplashScreen SS = new SplashScreen(this, "resources/SplashScreenGraphic-GDMG.jpg", 3500);
 		Thread splashThread = new Thread(SS, "SplashThread");
         splashThread.start();
         
@@ -155,15 +156,21 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         
         JMenuBar mBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        aboutItem = new JMenuItem("About");
-        aboutItem.addActionListener(this);
         exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(this);
-        
-        fileMenu.add(aboutItem);
-        fileMenu.addSeparator();
         fileMenu.add(exitItem);
         mBar.add(fileMenu);
+        
+        JMenu aboutMenu = new JMenu("About");
+        versionItem = new JMenuItem("Version");
+        versionItem.addActionListener(this);
+        aboutItem = new JMenuItem("About");
+        aboutItem.addActionListener(this);
+        aboutMenu.add(versionItem);
+        aboutMenu.addSeparator();
+        aboutMenu.add(aboutItem);
+        mBar.add(aboutMenu);
+        
         setJMenuBar(mBar);
 
         /*
@@ -261,10 +268,12 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         
         if(obj == browseFileButton)
         	loadFile();
-        if(obj == exitItem)
+        else if(obj == exitItem)
         	System.exit(0);
-        if(obj == aboutItem)
+        else if(obj == aboutItem)
         	new About(this, version);
+        else if(obj == versionItem)
+        	versionCheck.display();
     }
 
     /**
