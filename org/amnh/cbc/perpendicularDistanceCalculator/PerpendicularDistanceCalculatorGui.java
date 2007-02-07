@@ -68,12 +68,16 @@ import org.amnh.cbc.geospatial.SphericalFunctionEngine;
  *
  */
 public class PerpendicularDistanceCalculatorGui extends JFrame implements ActionListener {
+	/* Eclipse generated serialVersionUID */
+	private static final long serialVersionUID = 2032448473434530299L;
+
 	/* Current Version Number */
 	private static final String version = "1.2.0";
 
 	/** \brief Instance of the VersionCheck class */
 	private VersionCheck versionCheck;
 	
+	/* GUI objects */
 	private JTextField transectLegID;
 	private JTextField transectLegStartLongitude;
 	private JTextField transectLegStartLatitude;
@@ -104,12 +108,13 @@ public class PerpendicularDistanceCalculatorGui extends JFrame implements Action
 	private JButton clearButton2;
 	private JButton clearButton3;
 	
+	/** \brief Array holding the current distance units */
 	private String distanceUnits[][] = {{"meters", "m"},
 										{"kilometers", "km"},
 										{"nautical mi", "nm"},
 										{"radians", "rad"},
 										{"degrees", "deg"}};
-	
+	/** \brief Array hlding the current hard coded speriod radi */
 	private String spheroids[][] = {{"WGS84","6378137"},
 			 						{"User Defined", "0"}};
 								
@@ -477,9 +482,9 @@ public class PerpendicularDistanceCalculatorGui extends JFrame implements Action
         else if(obj == exportButton)
         	export();
         else if(obj == gcdItem)
-        	new GCDWindow();
+        	new GreatCircleDistanceGui();
         else if(obj == igcpItem)
-        	new IGCPWindow();
+        	new IntermediateGreatCirclePointsGui();
         else if(obj == runButton)
         	processObservation();
         else if(obj == versionItem)

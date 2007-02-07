@@ -1,3 +1,35 @@
+/*
+** File: GeographicDistanceMatrixGeneratorEngine.java
+** Author: Peter J. Ersts (ersts@amnh.org)
+** Creation Date: 2007-02-07
+** Revision Date: 2007-02-07
+**
+** Copyright (c) 2007, American Museum of Natural History. All rights reserved.
+** 
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Library General Public
+** License as published by the Free Software Foundation; either
+** version 2 of the License, or (at your option) any later version.
+** 
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Library General Public License for more details.
+** 
+** You should have received a copy of the GNU Library General Public
+** License along with this library; if not, write to the
+** Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+** MA 02110-1301, USA.
+**
+** This work has been partially supported by NASA under award No. NAG5-8543 and NNG05G041G 
+** Additionally, this program was prepared by the the above author(s) under award 
+** No. NA04AR4700191 and NA05SEC46391002 from the National Oceanic and Atmospheric
+** Administration, U.S. Department of Commerce.  The statements, findings,
+** conclusions, and recommendations are those of the author(s) and do not
+** necessarily reflect the views of the National Oceanic and Atmospheric
+** Administration or the Department of Commerce.
+**
+**/
 package org.amnh.cbc.geographicDistanceMatrixGenerator;
 
 import java.io.FileReader;
@@ -13,13 +45,20 @@ import java.util.StringTokenizer;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.amnh.cbc.geospatial.core.SphericalFunctionEngine;
+import org.amnh.cbc.geospatial.SphericalFunctionEngine;
 
+/**
+ * This class builds the geographic distance matrix
+ * @author Peter J. Ersts
+ *
+ */
 public class GeographicDistanceMatrixGeneratorEngine {
-	Vector rawData; 
+	/** \Brief a Vector to hold all of the original data from the input file */
+	private Vector rawData; 
 	
 	/**
-	 * Constructor for the GeographicDistanceMatrixEngine
+	 * Constructor 
+	 * 
 	 */
 	public GeographicDistanceMatrixGeneratorEngine() {
 		rawData = new Vector();
@@ -51,7 +90,7 @@ public class GeographicDistanceMatrixGeneratorEngine {
 			formatter = new DecimalFormat("0.00");
 	
 		/*
-		 * This could be made more elegand and compress into one routine but I am lazy ;)
+		 * This could be made more elegant and compress into one routine but I am lazy ;)
 		 */
 		if(outputFormat.equalsIgnoreCase("FULL_MATRIX")) {
 			rowData = new String("");
@@ -168,11 +207,11 @@ public class GeographicDistanceMatrixGeneratorEngine {
             		return false;
             	}
             	/*
-            	 * It would have been better to split the input line into its token here rather than 
+            	 * It would have been better to split the input line into its tokens here rather than 
             	 * storing the whole inputline and then tokenizing each entry later in the generateMatrix method
             	 * 
-            	 * The reason why the tokens are not parsed into label,number, number here is that I did want 
-            	 * to not load a file because a number was invalid, I wanted this to appear in the matrix for ease
+            	 * The reason why the tokens are not parsed into label,number, number here is that I did want to stop 
+            	 * loading a file because a number was invalid, I wanted this to appear in the matrix for ease
             	 * of identifying the offending number
             	 */
             	rawData.add(inputLine);

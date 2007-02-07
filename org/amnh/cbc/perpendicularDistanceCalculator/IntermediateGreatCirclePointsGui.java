@@ -1,12 +1,10 @@
 /*
-** File: IGCPWindow.java
+** File: IntermediateGreatCirclePointsGui.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
 ** Creation Date: 2005-10-13
-** Revision Date: 2005-10-13
+** Revision Date: 2007-02-07
 **
-** version 1.0
-**
-** Copyright (c) 2005, American Museum of Natural History. All rights reserved.
+** Copyright (c) 2005 - 2007, American Museum of Natural History. All rights reserved.
 ** 
 ** This library is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Library General Public
@@ -52,17 +50,28 @@ import javax.swing.*;
 
 import org.amnh.cbc.geospatial.SphericalFunctionEngine;
 
-public final class IGCPWindow extends JFrame {
+/**
+ * This class will display a window in which you can calculate intermediate points along a great circle
+ * @author Peter J. Ersts
+ *
+ */
+public final class IntermediateGreatCirclePointsGui extends JFrame {
+	/* Eclipse generated serialVersionUID */
+	private static final long serialVersionUID = 7741427362013326640L;
+	
+	/** \brief local instance of the spherical function engine */
 	private SphericalFunctionEngine sfe;
+	/** \brief Array holding the current distance units */
 	private String distanceUnits[][] = {{"meters", "m"},
 			{"kilometers", "km"},
 			{"nautical mi", "nm"},
 			{"radians", "rad"},
 			{"degrees", "deg"}};
-
+	/** \brief Array hlding the current hard coded speriod radi */
 	private String spheroids[][] = {{"WGS84","6378137"},
 			{"User Defined", "0"}};
 	
+	/* GUI objects */
 	private JTextField point1Longitude;
 	private JTextField point1Latitude;
 	private JTextField point2Longitude;
@@ -74,7 +83,7 @@ public final class IGCPWindow extends JFrame {
 	private JLabel distanceSummary;
 	private JLabel coordinatesPoint3;
 	
-	IGCPWindow() {
+	IntermediateGreatCirclePointsGui() {
 		sfe = new SphericalFunctionEngine();
 		Color baseColor = new Color(234,234,234);
 		
@@ -251,7 +260,11 @@ public final class IGCPWindow extends JFrame {
         setVisible(true);
 		
 	}
-
+	
+	/**
+	 * Calculate great circle distance and dipslay result
+	 * @return		False if an error was detected within the input data
+	 */
 	private boolean calculate() {
 		if(emptyFieldsExist()) {
 			JOptionPane.showMessageDialog(this, "All input fields must contain data","Empty Field Warning", JOptionPane.WARNING_MESSAGE);
@@ -282,6 +295,10 @@ public final class IGCPWindow extends JFrame {
 		return true;
 	}
 	
+    /**
+     * Check input fields for missing data
+     * @return		True if an imput field is found to be empty
+     */
 	private boolean emptyFieldsExist() {
 		if(point1Longitude.getText().length() == 0)
 			return true;
@@ -298,6 +315,10 @@ public final class IGCPWindow extends JFrame {
 		return false;
 	}
 	
+	/**
+	 * Check all numeric input fields for possible invalid entries
+	 * @return		False if an invalid number is encountered
+	 */
 	private boolean numberDataValid() {
 		if(!SphericalFunctionEngine.validateNumericString(point1Longitude.getText()))
 			return false;

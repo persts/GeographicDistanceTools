@@ -1,6 +1,37 @@
+/*
+** File: GeographicDistanceMatrixGeneratorGUI.java
+** Author: Peter J. Ersts (ersts@amnh.org)
+** Creation Date: 2007-02-07
+** Revision Date: 2007-02-07
+**
+** Copyright (c) 2007, American Museum of Natural History. All rights reserved.
+** 
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Library General Public
+** License as published by the Free Software Foundation; either
+** version 2 of the License, or (at your option) any later version.
+** 
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Library General Public License for more details.
+** 
+** You should have received a copy of the GNU Library General Public
+** License along with this library; if not, write to the
+** Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+** MA 02110-1301, USA.
+**
+** This work has been partially supported by NASA under award No. NAG5-8543 and NNG05G041G 
+** Additionally, this program was prepared by the the above author(s) under award 
+** No. NA04AR4700191 and NA05SEC46391002 from the National Oceanic and Atmospheric
+** Administration, U.S. Department of Commerce.  The statements, findings,
+** conclusions, and recommendations are those of the author(s) and do not
+** necessarily reflect the views of the National Oceanic and Atmospheric
+** Administration or the Department of Commerce.
+**
+**/
 package org.amnh.cbc.geographicDistanceMatrixGenerator;
 
-import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -9,12 +40,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import java.util.Vector;
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -33,17 +60,49 @@ import javax.swing.JRadioButton;
 import javax.swing.BorderFactory;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 
+import org.amnh.cbc.core.VersionCheck;
 import org.amnh.cbc.core.SplashScreen;
 import org.amnh.cbc.core.SimpleFileFilter;
-import org.amnh.cbc.geospatial.core.SphericalFunctionEngine;
+import org.amnh.cbc.geospatial.SphericalFunctionEngine;
 
-import edu.stanford.ejalbert.BrowserLauncher;
+/**
+ * This is the main window of the application
+ * @author Peter J. Ersts
+ *
+ */
+public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements ActionListener, ItemListener, DocumentListener {
+	/* Eclipse generated serialVersionUID */
+	private static final long serialVersionUID = 7765098507171187206L;
 
-public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements ActionListener, ItemListener, DocumentListener, HyperlinkListener {
+	/* Current Version Number */
+	private static final String version = "1.2.0";
+	
+	/** \brief Instance of the VersionCheck class */
+	private VersionCheck versionCheck;
+	/** \brief Instance of the matrix generating engine */
+	private GeographicDistanceMatrixGeneratorEngine matrixGenerator;
+
+	/** \brief Flag to indicate if a file has been loaded */
 	private boolean fileLoaded;
+	/** \brief Objected used to short circuit an ActionEvent loop between spheroidList and spheroidRadius */
+	private Object eventFireControl;						
+	/** \brief Event counter needed because JComboBox fires two events and we only want to deal with the second */
+	private int spheroidRadiusActionCount;
+	/** \brief Event counter needed because JComboBox fires two events and we only want to deal with the second */
+	private int outputDistanceUnitsActionCount;				
+		
+	/** \brief Array holding the current distance units */
+	private String distanceUnits[][] = {{"meters", "m"},
+										{"kilometers", "km"},
+										{"nautical mi", "nm"},
+										{"radians", "rad"},
+										{"degrees", "deg"}};
+	/** \brief Array hlding the current hard coded speriod radi */
+	private String spheroids[][] = {{"WGS84","6378137"},
+			 						{"User Defined", "0"}};
+
+	/* GUI Objects */
 	private JButton browseFileButton;
 	private JMenuItem exitItem;
 	private JMenuItem aboutItem;
@@ -56,19 +115,6 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 	private JRadioButton fullMatrix;
 	private JRadioButton lowerTriangular;
 	private JRadioButton lowerTriangularDiagonal;
-	private GeographicDistanceMatrixGeneratorEngine matrixGenerator;
-	private int spheroidRadiusActionCount;					/* Need because JComboBox fires two events and we only want to deal with the second */
-	private int outputDistanceUnitsActionCount;				/* Need because JComboBox fires two events and we only want to deal with the second */
-	private Object eventFireControl;						/* Used to short circuit an ActionEvent loop between spheroidList and spheroidRadius */
-	
-	
-	private String distanceUnits[][] = {{"meters", "m"},
-										{"kilometers", "km"},
-										{"nautical mi", "nm"},
-										{"radians", "rad"},
-										{"degrees", "deg"}};
-	private String spheroids[][] = {{"User Defined", "0"},			/* Just the semi-major axis because we assume perfect sphere */
-									{"WGS84","6378137"}};
 	
 	/*
 	 * Constructor and Required Listener Methods
@@ -76,12 +122,20 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 	
 	/**
 	 * Constuctor
+	 * 
 	 */
 	public GeographicDistanceMatrixGeneratorGUI() {
-		SplashScreen SS = new SplashScreen("SplashScreenGraphic-GDMG.jpg", this);
+		SplashScreen SS = new SplashScreen(this, "SplashScreenGraphic-GDMG.jpg", 3500);
 		Thread splashThread = new Thread(SS, "SplashThread");
         splashThread.start();
-
+        
+        versionCheck = new VersionCheck(this, version, "http://geospatial.amnh.org/open_source/gdmg/version", "http://geospatial.amnh.org/open_source/gdmg/download.php", 4000);
+        Thread versionThread = new Thread(versionCheck, "VersionThread");
+        versionThread.start();
+        
+        /*
+         * Set up main window
+         */
         Dimension defaultDimension = new Dimension(120, 25);
         matrixGenerator = new GeographicDistanceMatrixGeneratorEngine();
         fileLoaded = false;
@@ -198,8 +252,8 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         getContentPane().add(outputDisplayArea, BorderLayout.CENTER);
 	}
 	
-	/*
-	 *  (non-Javadoc)
+	/**
+	 * Required method
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
     public void actionPerformed(ActionEvent evt) {
@@ -210,11 +264,11 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         if(obj == exitItem)
         	System.exit(0);
         if(obj == aboutItem)
-        	displayInfo();
+        	new About(this, version);
     }
 
-    /*
-     *  (non-Javadoc)
+    /**
+     * Required method
      * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
      */
     public void itemStateChanged( ItemEvent e) {
@@ -254,7 +308,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         		generateMatrix();
         	else if(obj == outputDistanceUnits) {
         		outputDistanceUnitsActionCount++;
-        		if(outputDistanceUnitsActionCount == 2) {		/* Quick hack to just generate matrix the second event that JComboBox files */
+        		if(outputDistanceUnitsActionCount == 2) {		/* Quick hack to just generate matrix on the second event that JComboBox fires */
         			generateMatrix();							/* Otherwise matrix would be generate twice, Once for the current distance unit (deselect event) */
         			outputDistanceUnitsActionCount = 0;			/* And once for the new distance unit (selection event), and we only want the latter */
         		}
@@ -262,23 +316,24 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         }
     }
 
-    /*
-     *  (non-Javadoc)
+    /**
+     * Required method
      * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
      */
     public void removeUpdate(DocumentEvent e) {
         //Required but don't need
     }
-    /*
-     *  (non-Javadoc)
+    
+    /**
+     * Required method
      * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
      */
     public void changedUpdate(DocumentEvent e) {
         //Required but don't need
     }
     
-    /*
-     *  (non-Javadoc)
+    /**
+     * Required method
      * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
      */
     public void insertUpdate(DocumentEvent e) {
@@ -303,80 +358,15 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
     	}
     }
     
-    /*
-     *  (non-Javadoc)
-     * @see javax.swing.event.HyperlinkListener#hyperlinkUpdate(javax.swing.event.HyperlinkEvent)
-     */
-	public void hyperlinkUpdate(HyperlinkEvent evt) {
-		if(evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-			try {
-				BrowserLauncher.openURL(evt.getURL().toString());
-			}
-			catch (IOException e) {}
-		}
-			
-	}
     
     /*
      * Additional Methods
      */
-    /**
-     * Displays a small dialog with information about this applicatoin
-     */
-	private void displayInfo() {
-		/*
-		 * It would be nice to move this out of the application as a whole. The text here is required by 
-		 * Peter Ersts's instiution and funders. This required information conflicts (in PJE's opinion) 
-		 * with the openness of this code. If changes to this application are made, it is requested that
-		 * the modified code is sent back to Peter Ersts (ersts@amnh.org) so that it can be incorperated
-		 * in an "official release" 
-		 */
-		String messageText = "<HTML><STYLE>body {font-size: 12pt;}</STYLE><BODY>"+
-		 "This is version 1.0 of the Geographic Distance Matrix Generator "+
-		 "written by Peter J. Ersts, Project Specialist with the <a HREF=\"http://cbc.amnh.org\">Center for "+
-		 "Biodiversity and Conservation</a> at the <a HREF=\"http://amnh.org\">American Museum of Natural History</a>. "+
-		 "Eric Albert, Ned Horning, and Sergios-Orestis Kolokotronis should be acknowledged for their contributions which have "+
-		 "taken the form of code, constructive criticism, beta-testing and moral support. This "+
-		 "application implements Eric Albert's BrowserLauncher class.<BR><BR>"+
-		 "Questions, comments and bug reports can be posted on: <BR>"+
-		 "<a HREF=\"http://geospatial.amnh.org\">http://geospatial.amnh.org</a><BR>"+
-		 "The source code for this program is available upon request.<BR><BR>"+
-		 "This work has been partially supported by NASA under award No. NAG5-8543 and NNG05G041G. "+
-		 "Additionally, this program was prepared by the the above author(s) under "+
-		 "award No. NA04AR4700191 and NA05SEC46391002 from the National Oceanic and Atmospheric "+
-		 "Administration, U.S. Department of Commerce.  The statements, findings, "+
-		 "conclusions, and recommendations are those of the author(s) and do not "+
-		 "necessarily reflect the views of the National Oceanic and Atmospheric "+
-		 "Administration or the Department of Commerce.<BR></BODY></HTML>";
-		
-		JDialog info = new JDialog(this, true);
-		info.setSize(450,400);
-		info.setTitle("About");
-		info.setResizable(false);
-		info.getContentPane().setBackground(Color.WHITE);
-		info.setBackground(new Color(255,255,255));
-		info.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		info.setLocation((int)(this.getLocation().getX()+(this.getWidth()/2)-(info.getWidth()/2)),(int)(this.getLocation().getY()+(this.getHeight()/2)-(info.getHeight()/2)));
 
-		JEditorPane text = new JEditorPane();
-		text.addHyperlinkListener(this);
-		text.setContentType("text/html");
-		text.setText(messageText);
-		text.setEditable(false);
-
-		JPanel logos = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 0));
-		logos.setBackground(new Color(255, 255, 255));
-		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("cbc-blue-sm.jpg"))));
-		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("nasa-sm.jpg"))));
-		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("noaa-sm.jpg"))));
-		
-		info.getContentPane().add(logos, BorderLayout.SOUTH);
-		info.getContentPane().add(text, BorderLayout.CENTER);
-		info.setVisible(true);
-	}
     
     /**
-     * Calls GeographicDistanceMatrixEngine.generateMatrix method and displays the resulting matrix
+     * Call GeographicDistanceMatrixEngine.generateMatrix method and displays the resulting matrix
+     * 
      */
     private boolean generateMatrix() {
     	if(Double.parseDouble(spheroidRadius.getText()) < 6300000) {
@@ -411,14 +401,4 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         		
         }
     }
-    
-    
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		GeographicDistanceMatrixGeneratorGUI gdmgGUI = new GeographicDistanceMatrixGeneratorGUI();
-	}
-
 }

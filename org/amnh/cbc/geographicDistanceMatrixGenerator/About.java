@@ -1,8 +1,8 @@
 /*
 ** File: About.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
-** Creation Date: 2007-02-05
-** Revision Date: 2007-02-05
+** Creation Date: 2007-02-07
+** Revision Date: 2007-02-07
 **
 ** Copyright (c) 2007, American Museum of Natural History. All rights reserved.
 ** 
@@ -21,15 +21,16 @@
 ** Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
 ** MA 02110-1301, USA.
 **
-** This program was prepared by the the above author(s) 
-** under award No. NA04AR4700191 from the National Oceanic and Atmospheric
+** This work has been partially supported by NASA under award No. NAG5-8543 and NNG05G041G 
+** Additionally, this program was prepared by the the above author(s) under award 
+** No. NA04AR4700191 and NA05SEC46391002 from the National Oceanic and Atmospheric
 ** Administration, U.S. Department of Commerce.  The statements, findings,
 ** conclusions, and recommendations are those of the author(s) and do not
 ** necessarily reflect the views of the National Oceanic and Atmospheric
 ** Administration or the Department of Commerce.
 **
 **/
-package org.amnh.cbc.srvfs;
+package org.amnh.cbc.geographicDistanceMatrixGenerator;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -62,22 +63,23 @@ public class About extends JDialog implements HyperlinkListener {
 	 * @param parent	Parent frame
 	 * @param modal		Boolean to indicate if this dialog should be modal
 	 */
-	About(JFrame parent) {
+	About(JFrame parent, String version) {
 		String messageText = "<HTML><STYLE>body {font-size: 12pt;}</STYLE><BODY>"+
-							 "This release 1.2.0 of the Random Video Frame Sampler "+
-							 "written by Peter J. Ersts, Project Specialist with the <a HREF=\"http://cbc.amnh.org\">Center for "+
-							 "Biodiversity and Conservation</a> at the <a HREF=\"http://amnh.org\">American Museum of Natural History</a>.<BR><BR>"+
-							 "This application uses the Mersenne Twister algorithm for"+
-							 "random number generation. The Mersenne Twister was originally coded by Takuji"+
-							 "Nishimura in 1997 and translated to Java by Michael Lecuyer in 1999. This application"+
-							 "also implements Eric Albert's BrowserLauncher class.<BR><BR>"+
-							 "Questions, comments and bug reports can be posted on: <a HREF=\"http://geospatial.amnh.org/open_source/srvfs\">http://geospatial.amnh.org</a><BR><BR>"+
-							 "This program was prepared by the the above author(s) under "+
-							 "award No. NA04AR4700191 from the National Oceanic and Atmospheric "+
-							 "Administration, U.S. Department of Commerce.  The statements, findings, "+
-							 "conclusions, and recommendations are those of the author(s) and do not "+
-							 "necessarily reflect the views of the National Oceanic and Atmospheric "+
-							 "Administration or the Department of Commerce.</BODY></HTML>";
+		 "This is version "+ version +" of the Geographic Distance Matrix Generator "+
+		 "written by Peter J. Ersts, Project Specialist with the <a HREF=\"http://cbc.amnh.org\">Center for "+
+		 "Biodiversity and Conservation</a> at the <a HREF=\"http://amnh.org\">American Museum of Natural History</a>. "+
+		 "Eric Albert, Ned Horning, and Sergios-Orestis Kolokotronis should be acknowledged for their contributions which have "+
+		 "taken the form of code, constructive criticism, beta-testing and moral support. This "+
+		 "application implements Eric Albert's BrowserLauncher class.<BR><BR>"+
+		 "Questions, comments and bug reports can be posted on: <BR>"+
+		 "<a HREF=\"http://geospatial.amnh.org/open_source/gdmg/comments.php\">http://geospatial.amnh.org</a><BR><BR>"+
+		 "This work has been partially supported by NASA under award No. NAG5-8543 and NNG05G041G. "+
+		 "Additionally, this program was prepared by the the above author(s) under "+
+		 "award No. NA04AR4700191 and NA05SEC46391002 from the National Oceanic and Atmospheric "+
+		 "Administration, U.S. Department of Commerce.  The statements, findings, "+
+		 "conclusions, and recommendations are those of the author(s) and do not "+
+		 "necessarily reflect the views of the National Oceanic and Atmospheric "+
+		 "Administration or the Department of Commerce.<BR></BODY></HTML>";
 		setSize(850,375);
 		setTitle("About");
 		
@@ -95,12 +97,13 @@ public class About extends JDialog implements HyperlinkListener {
 		JPanel splash = new JPanel();
 		splash.setBackground(new Color(255,255,255));
 		splash.setBorder(BorderFactory.createEmptyBorder());
-		splash.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("resources/SplashScreenGraphic-SRVFS.jpg"))));
+		splash.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("resources/SplashScreenGraphic-GDMG.jpg"))));
 		getContentPane().add(splash, BorderLayout.WEST);
 		
 		JPanel logos = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 0));
 		logos.setBackground(new Color(255, 255, 255));
 		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("resources/cbc-blue-sm.jpg"))));
+		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("resources/nasa-sm.jpg"))));
 		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("resources/noaa-sm.jpg"))));
 		
 		getContentPane().add(logos, BorderLayout.SOUTH);

@@ -1,11 +1,8 @@
-package org.amnh.cbc.core;
 /*
 ** File: SimpleFileFilter.java
 ** Author: Peter J. Erts (ersts@amnh.org)
 ** Creation Date: 2005-01-11
 ** Revision Date: 2005-01-11
-**
-** Version: 1.0
 **
 ** Copyright (c) 2005, American Museum of Natural History. All rights reserved.
 ** 
@@ -25,10 +22,15 @@ package org.amnh.cbc.core;
 ** MA 02110-1301, USA.
 **
 **/
+package org.amnh.cbc.core;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
+/**
+ * Really simple file filter that looks like the million other out there
+ *
+ */
 public class SimpleFileFilter extends FileFilter {
 	
 	private String extension;
