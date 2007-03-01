@@ -1,8 +1,8 @@
 /*
 ** File: VersionCheck.java
 ** Author: Peter J. Erts (ersts@amnh.org)
-** Creation Date: 2007-05-02
-** Revision Date: 2007-05-02
+** Creation Date: 2007-02-05
+** Revision Date: 2007-03-01
 **
 ** Copyright (c) 2007, American Museum of Natural History. All rights reserved.
 ** 
@@ -23,12 +23,12 @@
 **/
 package org.amnh.cbc.core;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.BorderFactory;
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
 
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -55,7 +55,7 @@ public class VersionCheck extends JDialog implements ActionListener, Runnable {
 	/** \brief Parent Window */
 	private JFrame parent;
 	/** \brief Label used to display message in dialog */
-	private JLabel message;
+	private JEditorPane message;
 	/** \brief Version number passed from main application */
 	private String version;
 	/** \brief Url pointing to the version number of the current release */
@@ -85,7 +85,7 @@ public class VersionCheck extends JDialog implements ActionListener, Runnable {
 		downloadURL = downloadAddress;
 		initalDelay = delay;
 		
-		setSize(300, 125);
+		setSize(400, 150);
 		setTitle("Version Control");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
@@ -98,12 +98,12 @@ public class VersionCheck extends JDialog implements ActionListener, Runnable {
         buttonBar.add(updateButton);
         buttonBar.add(closeButton);
 
-        message = new JLabel();
-        JPanel messageDisplay = new JPanel();
-        messageDisplay.setBorder(BorderFactory.createEmptyBorder());
-        messageDisplay.add(message);
+        message = new JEditorPane();
+		JScrollPane messageScrollPane = new JScrollPane(message);
+		messageScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		messageScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         
-        getContentPane().add(messageDisplay, BorderLayout.CENTER);
+        getContentPane().add(messageScrollPane, BorderLayout.CENTER);
         getContentPane().add(buttonBar, BorderLayout.SOUTH);
 	}
 	
@@ -144,47 +144,47 @@ public class VersionCheck extends JDialog implements ActionListener, Runnable {
     		BufferedReader inputStream = new BufferedReader(new InputStreamReader(versionInfoConnection.getInputStream()));
     		String remoteVersion = inputStream.readLine();
     		if(remoteVersion.equals(version))
-    			message.setText("<HTML><BODY>VERSION: <strong>" + version +"</strong><BR>You have the most current release.</BODY></HTML>");
+    			message.setText("VERSION: " + version +"\nYou have the most current release.");
     		else {
     			String[] versionList = version.split("\\.");
     			String[] remoteVersionList = remoteVersion.split("\\.");
     			if(versionList.length < 3 || remoteVersionList.length < 3) {
-    				message.setText("<HTML><BODY>VERSION: <strong>" + version +"</strong><BR>Unable to confirm if updates are availble,<BR>click UPDATE to get the more recent releast");
+    				message.setText("VERSION: " + version +"\nUnable to confirm if updates are availble,\nclick UPDATE to get the most recent release or visit:\n" + downloadURL);
     				updateButton.setEnabled(true);
     				display();
     			}
     			
     			if(Integer.parseInt(versionList[0]) < Integer.parseInt(remoteVersionList[0])) {
-    				message.setText("<HTML><BODY>VERSION: <strong>" + version +"</strong><BR>A newer release is available,<BR>click UPDATE to get the more recent releast");
+    				message.setText("VERSION: " + version +"\nA newer release is available,\nclick UPDATE to get the most recent release or visit:\n" + downloadURL);
     				updateButton.setEnabled(true);
     				display();
     			}
     			else if(Integer.parseInt(versionList[1]) < Integer.parseInt(remoteVersionList[1])) {
-    				message.setText("<HTML><BODY>VERSION: <strong>" + version +"</strong><BR>A newer release is available,<BR>click UPDATE to get the more recent releast");
+    				message.setText("VERSION: " + version +"\nA newer release is available,\nclick UPDATE to get the most recent release or visit:\n" + downloadURL);
     				updateButton.setEnabled(true);
     				display();
     			}
     			else if(Integer.parseInt(versionList[2]) < Integer.parseInt(remoteVersionList[2])) {
-    				message.setText("<HTML><BODY>VERSION: <strong>" + version +"</strong><BR>A newer release is available,<BR>click UPDATE to get the more recent releast");
+    				message.setText("VERSION: " + version +"\nA newer release is available,\nclick UPDATE to get the more recent release or visit:\n" + downloadURL);
     				updateButton.setEnabled(true);
     				display();
     			}
     			else if(versionList.length < remoteVersionList.length) {
-    				message.setText("<HTML><BODY>VERSION: <strong>" + version +"</strong><BR>A newer release is available,<BR>click UPDATE to get the more recent releast");
+    				message.setText("VERSION: " + version +"\nA newer release is available,\nclick UPDATE to get the more recent release or visit:\n" + downloadURL);
     				updateButton.setEnabled(true);
     				display();
     			}
     			else {
-    				message.setText("<HTML><BODY>VERSION: <strong>" + version +"</strong><BR>You have the most current release.</BODY></HTML>");
+    				message.setText("VERSION: " + version +"\nYou have the most current release.");
     			}
     		}
     	}
     	catch(NumberFormatException e) {
-			message.setText("<HTML><BODY>VERSION: <strong>" + version +"</strong><BR>Unable to confirm if updates are availble,<BR>click UPDATE to get the more recent releast");
+			message.setText("VERSION: " + version +"\nUnable to confirm if updates are availble,\nclick UPDATE to get the more recent release or visit:\n" + downloadURL);
 			updateButton.setEnabled(true);
     	}
     	catch(Exception e){
-    		message.setText("<HTML><BODY>VERSION: <strong>" + version +"</strong><BR>Unable to connect to server to check version</BODY></HTML>");
+    		message.setText("VERSION: " + version +"\nUnable to connect to server to check version");
     	}
     }
     

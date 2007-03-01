@@ -43,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
 import javax.swing.BorderFactory;
 
@@ -64,15 +65,16 @@ public class About extends JDialog implements HyperlinkListener {
 	 * @param modal		Boolean to indicate if this dialog should be modal
 	 */
 	About(JFrame parent, String version) {
-		String messageText = "<HTML><STYLE>body {font-size: 12pt;}</STYLE><BODY>"+
-		 "This is version "+ version +" of the Geographic Distance Matrix Generator "+
+		String messageText = "<HTML><BODY>"+
+		 "Version "+ version +" of the Geographic Distance Matrix Generator "+
 		 "written by Peter J. Ersts, Project Specialist with the <a HREF=\"http://cbc.amnh.org\">Center for "+
 		 "Biodiversity and Conservation</a> at the <a HREF=\"http://amnh.org\">American Museum of Natural History</a>. "+
 		 "Eric Albert, Ned Horning, and Sergios-Orestis Kolokotronis should be acknowledged for their contributions which have "+
 		 "taken the form of code, constructive criticism, beta-testing and moral support. This "+
-		 "application implements Eric Albert's BrowserLauncher class.<BR><BR>"+
-		 "Questions, comments and bug reports can be posted on: <BR>"+
-		 "<a HREF=\"http://geospatial.amnh.org/open_source/gdmg/comments.php\">http://geospatial.amnh.org</a><BR><BR>"+
+		 "application implements Eric Albert's BrowserLauncher class, which is know not to work on many linux systems.<BR><BR>"+
+		 "Questions, comments can be posted on: <BR>"+
+		 "<a HREF=\"http://geospatial.amnh.org/open_source/gdmg/comments.php\">http://geospatial.amnh.org/gdmg/comments.php</a><BR><BR>"+
+		 "Bug reports and enhancements can be posted on: <a HREF=\"http://trac.geospatial.amnh.org/projects/javageodistancetools\">http://trac.geospatial.amnh.org/projects/javageodistancetools</a><BR><BR>"+
 		 "This work has been partially supported by NASA under award No. NAG5-8543 and NNG05G041G. "+
 		 "Additionally, this program was prepared by the the above author(s) under "+
 		 "award No. NA04AR4700191 and NA05SEC46391002 from the National Oceanic and Atmospheric "+
@@ -80,7 +82,7 @@ public class About extends JDialog implements HyperlinkListener {
 		 "conclusions, and recommendations are those of the author(s) and do not "+
 		 "necessarily reflect the views of the National Oceanic and Atmospheric "+
 		 "Administration or the Department of Commerce.<BR></BODY></HTML>";
-		setSize(850,375);
+		setSize(435,600);
 		setTitle("About");
 		
 		getContentPane().setBackground(Color.WHITE);
@@ -92,13 +94,17 @@ public class About extends JDialog implements HyperlinkListener {
 		text.addHyperlinkListener(this);
 		text.setContentType("text/html");
 		text.setText(messageText);
+		text.setCaretPosition(0);
 		text.setEditable(false);
+		JScrollPane textScrollPane = new JScrollPane(text);
+		textScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		
 		
 		JPanel splash = new JPanel();
 		splash.setBackground(new Color(255,255,255));
 		splash.setBorder(BorderFactory.createEmptyBorder());
 		splash.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("resources/SplashScreenGraphic-GDMG.jpg"))));
-		getContentPane().add(splash, BorderLayout.WEST);
+		getContentPane().add(splash, BorderLayout.NORTH);
 		
 		JPanel logos = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 0));
 		logos.setBackground(new Color(255, 255, 255));
@@ -107,7 +113,7 @@ public class About extends JDialog implements HyperlinkListener {
 		logos.add(new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("resources/noaa-sm.jpg"))));
 		
 		getContentPane().add(logos, BorderLayout.SOUTH);
-		getContentPane().add(text, BorderLayout.CENTER);
+		getContentPane().add(textScrollPane, BorderLayout.CENTER);
 		setVisible(true);
 	}
 	
