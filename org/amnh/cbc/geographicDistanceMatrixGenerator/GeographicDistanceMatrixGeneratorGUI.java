@@ -61,6 +61,11 @@ import javax.swing.BorderFactory;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedWriter;
+
 import org.amnh.cbc.core.VersionCheck;
 import org.amnh.cbc.core.SplashScreen;
 import org.amnh.cbc.core.SimpleFileFilter;
@@ -104,6 +109,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 
 	/* GUI Objects */
 	private JButton browseFileButton;
+	private JButton exportButton;
 	private JMenuItem exitItem;
 	private JMenuItem aboutItem;
 	private JMenuItem versionItem;
@@ -255,8 +261,15 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         JScrollPane scrollPane = new JScrollPane(matrixDisplay, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         outputDisplayArea.add(matrixDisplayOptions, BorderLayout.NORTH);
         outputDisplayArea.add(scrollPane, BorderLayout.CENTER);
-        
+
         getContentPane().add(outputDisplayArea, BorderLayout.CENTER);
+        
+        exportButton = new JButton("Export");
+        exportButton.addActionListener(this);
+        JPanel buttonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonBar.add(exportButton);
+        
+        getContentPane().add(buttonBar, BorderLayout.SOUTH);
 	}
 	
 	/**
@@ -268,6 +281,8 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         
         if(obj == browseFileButton)
         	loadFile();
+        else if(obj == exportButton)
+        	exportResults();
         else if(obj == exitItem)
         	System.exit(0);
         else if(obj == aboutItem)
@@ -372,6 +387,36 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
      * Additional Methods
      */
 
+    
+    /**
+     * 
+     */
+    private boolean exportResults() {
+		if(matrixDisplay.getText().equals(""))
+			return false;
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.addChoosableFileFilter(new SimpleFileFilter(".txt", "Text Files"));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        if(fileChooser.showSaveDialog(this) != JFileChooser.CANCEL_OPTION) {
+        	try {
+        		BufferedWriter outputStream = null;
+        		if(fileChooser.getSelectedFile().getName().toLowerCase().endsWith(".txt"))
+        			outputStream = new BufferedWriter(new FileWriter(fileChooser.getSelectedFile()));
+        		else
+        			outputStream = new BufferedWriter(new FileWriter(new File(fileChooser.getSelectedFile().getAbsolutePath()+".txt")));
+        		
+        		outputStream.write(matrixDisplay.getText());
+        		       		
+        		outputStream.close();
+        	}
+        	catch (IOException e) {
+        		JOptionPane.showMessageDialog(this, "An error occurred while writing to the export file","Write Error", JOptionPane.ERROR_MESSAGE);
+        		return false;
+        	}
+        }
+    	return true;
+    }
     
     /**
      * Call GeographicDistanceMatrixEngine.generateMatrix method and displays the resulting matrix
