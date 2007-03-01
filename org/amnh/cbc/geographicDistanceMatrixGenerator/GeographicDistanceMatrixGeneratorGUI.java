@@ -2,7 +2,7 @@
 ** File: GeographicDistanceMatrixGeneratorGUI.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
 ** Creation Date: 2007-02-07
-** Revision Date: 2007-02-07
+** Revision Date: 2007-03-01
 **
 ** Copyright (c) 2007, American Museum of Natural History. All rights reserved.
 ** 
@@ -100,7 +100,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 										{"degrees", "deg"}};
 	/** \brief Array hlding the current hard coded speriod radi */
 	private String spheroids[][] = {{"WGS84","6378137"},
-			 						{"User Defined", "0"}};
+			 						{"User Defined", "0"}}; /* User Defined must always be last */
 
 	/* GUI Objects */
 	private JButton browseFileButton;
@@ -144,11 +144,11 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
         spheroidRadiusActionCount = 0;
         outputDistanceUnitsActionCount = 0;
         
-        int frameWidth = 700;
+        int frameWidth = 725;
         int frameHeight = 500;
 		setTitle("Geographic Distance Matrix Generator");
         setSize(frameWidth, frameHeight);
-        setResizable(false); /* not great style but */
+        //setResizable(false); /* not great style but */
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	    setLocation(screenSize.width/2 - frameWidth/2, screenSize.height/2 - frameHeight/2);
@@ -209,7 +209,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 		spheroidList.setPreferredSize(defaultDimension);
 		spheroidList.setMaximumRowCount(3);
 		spheroidList.addItemListener(this); 
-		spheroidList.setSelectedIndex(1);
+		spheroidList.setSelectedIndex(0);
 		
 		spheroidRadius.setText(spheroids[spheroidList.getSelectedIndex()][1]);
 		spheroidRadius.getDocument().addDocumentListener(this);
@@ -299,7 +299,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
     			 * Typing in the text field will cause the combo box to fire two events also because the combo box is changed
     			 * to "user defined".
     			 */ 
-    			if (spheroidList.getSelectedIndex()!= 0 && eventFireControl == spheroidList)  	
+    			if (spheroidList.getSelectedIndex()!= (spheroids.length-1) && eventFireControl == spheroidList)  	
     				spheroidRadius.setText(spheroids[spheroidList.getSelectedIndex()][1]); /* this causes the textfield to fire an event - see comments in insertUpdate method */ 
     			
     			if(eventFireControl == spheroidList) /* clear evenFireControl if chain of events was started by the combobox */
@@ -352,7 +352,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
     		if(eventFireControl == null)
     			eventFireControl = spheroidRadius;
     		if(eventFireControl == spheroidRadius)		/* Lock eventFireControl to this object so the Combobox dones not try to update the textfield */
-    			spheroidList.setSelectedIndex(0);
+    			spheroidList.setSelectedIndex(spheroids.length-1);
     		if(SphericalFunctionEngine.validateNumericString(spheroidRadius.getText())) {
     			if(Double.parseDouble(spheroidRadius.getText()) < 0)
     				JOptionPane.showMessageDialog(this, "ERROR: [Format Error] Spheroid radius can be negative","ERROR", JOptionPane.WARNING_MESSAGE);

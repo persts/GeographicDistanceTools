@@ -2,7 +2,7 @@
 ** File: GeographicDistanceMatrixGeneratorEngine.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
 ** Creation Date: 2007-02-07
-** Revision Date: 2007-02-07
+** Revision Date: 2007-03-01
 **
 ** Copyright (c) 2007, American Museum of Natural History. All rights reserved.
 ** 
@@ -40,7 +40,6 @@ import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Vector;
-import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -53,7 +52,7 @@ import org.amnh.cbc.geospatial.SphericalFunctionEngine;
  *
  */
 public class GeographicDistanceMatrixGeneratorEngine {
-	/** \Brief a Vector to hold all of the original data from the input file */
+	/** \Brief a Vector to hold location records from the input file */
 	private Vector rawData; 
 	
 	/**
@@ -66,8 +65,7 @@ public class GeographicDistanceMatrixGeneratorEngine {
 	
 	/**
 	 * Generates a matrix representing the great circle distances for all pairwise combinations of
-	 * points stored in the rawData vector. If a coordinate is not a valid number, ERROR it output for
-	 * that particular cell of the matrix rather than throwing a NumberFormatException
+	 * points stored in the rawData vector. If a coordinate is not a valid number, display ERROR in output
 	 * 
 	 * @param spheroidRadius			Radius of spherical representation of the earth.  Currently assumed to be in meeters
 	 * @param units						The unit of measurement for the resulting distances
@@ -95,28 +93,20 @@ public class GeographicDistanceMatrixGeneratorEngine {
 		if(outputFormat.equalsIgnoreCase("FULL_MATRIX")) {
 			rowData = new String("");
 			for(int x = 0; x < rawData.size(); x++) {
-				StringTokenizer st = new StringTokenizer((String)rawData.elementAt(x));
-				rowData = rowData+"\t"+st.nextToken();
+				rowData = rowData+"\t"+((LocationRecord)rawData.elementAt(x)).label;
 			}
 			results.add(rowData);
 			for(int y = 0; y < rawData.size(); y++) {	
-				StringTokenizer st = new StringTokenizer((String)rawData.elementAt(y));
-				String p1Label = st.nextToken();
-				String p1Latitude = st.nextToken();
-				String p1Longitude = st.nextToken();
-				rowData = new String(p1Label);
+				LocationRecord lr = (LocationRecord)rawData.elementAt(y);
+				rowData = new String(lr.label);
 				for(int x = 0; x < rawData.size(); x++) {
-					StringTokenizer st2 = new StringTokenizer((String)rawData.elementAt(x));
-					st2.nextToken();
-					String p2Latitude = st2.nextToken();
-					String p2Longitude = st2.nextToken();
-					try {
-						distance = SFE.greatCircleDistance(Double.parseDouble(p1Longitude), Double.parseDouble(p1Latitude), Double.parseDouble(p2Longitude), Double.parseDouble(p2Latitude), units);
+					LocationRecord lr2 = (LocationRecord)rawData.elementAt(x);
+					if(lr.isValid && lr2.isValid) {
+						distance = SFE.greatCircleDistance(lr.longitude, lr.latitude, lr2.longitude, lr2.latitude, units);
 						rowData = rowData+"\t"+formatter.format(distance);
 					}
-					catch(NumberFormatException e) {
+					else
 						rowData = rowData+"\tERROR";
-					}
 				}
 				results.add(rowData);
 			}
@@ -125,28 +115,20 @@ public class GeographicDistanceMatrixGeneratorEngine {
 		if(outputFormat.equalsIgnoreCase("LOWER_TRIANGULAR_DIAGONAL")) {
 			rowData = new String("");
 			for(int x = 0; x < rawData.size(); x++) {
-				StringTokenizer st = new StringTokenizer((String)rawData.elementAt(x));
-				rowData = rowData+"\t"+st.nextToken();
+				rowData = rowData+"\t"+((LocationRecord)rawData.elementAt(x)).label;
 			}
 			results.add(rowData);
 			for(int y = 0; y < rawData.size(); y++) {	
-				StringTokenizer st = new StringTokenizer((String)rawData.elementAt(y));
-				String p1Label = st.nextToken();
-				String p1Latitude = st.nextToken();
-				String p1Longitude = st.nextToken();
-				rowData = new String(p1Label);
+				LocationRecord lr = (LocationRecord)rawData.elementAt(y);
+				rowData = new String(lr.label);
 				for(int x = 0; x <= y; x++) {
-					StringTokenizer st2 = new StringTokenizer((String)rawData.elementAt(x));
-					st2.nextToken();
-					String p2Latitude = st2.nextToken();
-					String p2Longitude = st2.nextToken();
-					try {
-						distance = SFE.greatCircleDistance(Double.parseDouble(p1Longitude), Double.parseDouble(p1Latitude), Double.parseDouble(p2Longitude), Double.parseDouble(p2Latitude), units);
+					LocationRecord lr2 = (LocationRecord)rawData.elementAt(x);
+					if(lr.isValid && lr2.isValid) {
+						distance = SFE.greatCircleDistance(lr.longitude, lr.latitude, lr2.longitude, lr2.latitude, units);
 						rowData = rowData+"\t"+formatter.format(distance);
 					}
-					catch(NumberFormatException e) {
+					else
 						rowData = rowData+"\tERROR";
-					}
 				}
 				results.add(rowData);
 			}
@@ -155,28 +137,20 @@ public class GeographicDistanceMatrixGeneratorEngine {
 		if(outputFormat.equalsIgnoreCase("LOWER_TRIANGULAR")) {
 			rowData = new String("");
 			for(int x = 0; x < rawData.size()-1; x++) {
-				StringTokenizer st = new StringTokenizer((String)rawData.elementAt(x));
-				rowData = rowData+"\t"+st.nextToken();
+				rowData = rowData+"\t"+((LocationRecord)rawData.elementAt(x)).label;
 			}
 			results.add(rowData);
 			for(int y = 1; y < rawData.size(); y++) {	
-				StringTokenizer st = new StringTokenizer((String)rawData.elementAt(y));
-				String p1Label = st.nextToken();
-				String p1Latitude = st.nextToken();
-				String p1Longitude = st.nextToken();
-				rowData = new String(p1Label);
+				LocationRecord lr = (LocationRecord)rawData.elementAt(y);
+				rowData = new String(lr.label);
 				for(int x = 0; x < y; x++) {
-					StringTokenizer st2 = new StringTokenizer((String)rawData.elementAt(x));
-					st2.nextToken();
-					String p2Latitude = st2.nextToken();
-					String p2Longitude = st2.nextToken();
-					try {
-						distance = SFE.greatCircleDistance(Double.parseDouble(p1Longitude), Double.parseDouble(p1Latitude), Double.parseDouble(p2Longitude), Double.parseDouble(p2Latitude), units);
+					LocationRecord lr2 = (LocationRecord)rawData.elementAt(x);
+					if(lr.isValid && lr2.isValid) {
+						distance = SFE.greatCircleDistance(lr.longitude, lr.latitude, lr2.longitude, lr2.latitude, units);
 						rowData = rowData+"\t"+formatter.format(distance);
 					}
-					catch(NumberFormatException e) {
+					else
 						rowData = rowData+"\tERROR";
-					}
 				}
 				results.add(rowData);
 			}
@@ -198,23 +172,16 @@ public class GeographicDistanceMatrixGeneratorEngine {
         try {
         	rawData = new Vector();
             inputStream = new BufferedReader(new FileReader(filename));
-            StringTokenizer tokenizer = null;
+            String[] tokens;
             String inputLine = inputStream.readLine();
             while(inputLine != null) {
-            	tokenizer = new StringTokenizer(inputLine);
-            	if(tokenizer.countTokens() != 3) {
-            		JOptionPane.showMessageDialog(mainWindow, "ERROR: [Data Format] Exactly three tokens per line are expected from the input file, "+ tokenizer.countTokens() +" were encountered.","Error", JOptionPane.WARNING_MESSAGE);
+            	tokens = inputLine.split("[\t,]");
+            	if(tokens.length != 3) {
+            		JOptionPane.showMessageDialog(mainWindow, "ERROR: [Data Format] Exactly three tokens per line are expected from the input file, "+ tokens.length +" were encountered.","Error", JOptionPane.WARNING_MESSAGE);
             		return false;
             	}
-            	/*
-            	 * It would have been better to split the input line into its tokens here rather than 
-            	 * storing the whole inputline and then tokenizing each entry later in the generateMatrix method
-            	 * 
-            	 * The reason why the tokens are not parsed into label,number, number here is that I did want to stop 
-            	 * loading a file because a number was invalid, I wanted this to appear in the matrix for ease
-            	 * of identifying the offending number
-            	 */
-            	rawData.add(inputLine);
+
+            	rawData.add(new LocationRecord(tokens));
             	inputLine = inputStream.readLine();
             }
         }
