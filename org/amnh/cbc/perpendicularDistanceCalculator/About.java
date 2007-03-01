@@ -70,7 +70,7 @@ public class About extends JDialog implements HyperlinkListener {
  							"Biodiversity and Conservation</a> at the <a HREF=\"http://amnh.org\">American Museum of Natural History</a>. "+
  							"Eric Albert, Tim Collins, Ned Horning, Kevin Koy, Matt Leslie, and Marco Polin "+
  							"should be acknowledged for their contributions which have taken the form of code, constructive criticism, "+
- 							"beta-testing and moral support. This application implements Eric Albert's BrowserLauncher class.<BR><BR>"+
+ 							"beta-testing and moral support. This application implements Eric Albert's BrowserLauncher class, which is know not to work on many linux systems.<BR><BR>"+
  							"Questions, comments can be posted on: <BR>"+
  							 "<a HREF=\"http://geospatial.amnh.org/open_source/gdmg/comments.php\">http://geospatial.amnh.org/gdmg/comments.php</a><BR><BR>"+
  							 "Bug reports and enhancements can be posted on: <a HREF=\"http://trac.geospatial.amnh.org/projects/javageodistancetools\">http://trac.geospatial.amnh.org/projects/javageodistancetools</a><BR><BR>"+
