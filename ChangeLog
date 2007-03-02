@@ -1,0 +1,101 @@
+2007-03-02 14:18  pete
+
+	* ., resources/SplashScreenGraphic-GDMG.jpg,
+	  resources/SplashScreenGraphic-PDC.jpg: -Updated splash screens
+
+2007-03-01 22:07  pete
+
+	* org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorGUI.java:
+	  -Added export feature to GDMG
+
+2007-03-01 21:37  pete
+
+	* org/amnh/cbc/perpendicularDistanceCalculator/About.java: -Updated
+	  about dialogs for the GDMG
+
+2007-03-01 21:15  pete
+
+	* org/amnh/cbc/core/VersionCheck.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/About.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/About.java: -Updated
+	  the version reporting class for better output display
+	  -Updated about dialogs for both the PDC and GDMG
+
+2007-03-01 15:43  pete
+
+	* org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorEngine.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorGUI.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/LocationRecord.java:
+	  -Removed StringTokenizerClass -Parse location records once on
+	  load rather than each time the matrix is built (major speed
+	  boost) -Added the equivalent of a LocationRecord struct to hold
+	  all location information
+	  GeographicDistanceMatrixGeneratorEngine.java
+	  GeographicDistanceMatrixGeneratorGUI.java LocationRecord.java
+
+2007-02-07 15:37  pete
+
+	* org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorGUI.java:
+	  Added about menu item
+
+2007-02-07 15:32  pete
+
+	* org/amnh/cbc/core/SimpleFileFilter.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/About.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGenerator.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorEngine.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorGUI.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/GCDWindow.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/GreatCircleDistanceGui.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/IGCPWindow.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/IntermediateGreatCirclePointsGui.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/PerpendicularDistanceCalculatorGui.java:
+	  Finished commenting and refactoring
+
+2007-02-06 21:16  pete
+
+	* org/amnh/cbc/core/SplashScreen.java,
+	  org/amnh/cbc/geospatial/SphericalFunctionEngine.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/About.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/GCDWindow.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/IGCPWindow.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/PerpendicularDistanceCalculator.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/PerpendicularDistanceCalculatorGui.java:
+	  Adding more comments to the Perpendicular Distance Calculator and
+	  refactoring classes
+
+2007-02-06 15:53  pete
+
+	* org/amnh/cbc/core/SplashScreen.java,
+	  org/amnh/cbc/core/VersionCheck.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/About.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/About.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/PerpendicularDistanceCalculator.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/PerpendicularDistanceCalculatorGui.java,
+	  resources/SplashScreenGraphic-GDMG.jpg,
+	  resources/SplashScreenGraphic-PDC.jpg, resources/cbc-blue-sm.jpg,
+	  resources/nasa-sm.jpg, resources/noaa-sm.jpg: Moved a few things
+	  around, but having problems with the project in Eclipse
+
+2007-02-02 18:42  pete
+
+	* edu, edu/stanford, edu/stanford/ejalbert,
+	  edu/stanford/ejalbert/BrowserLauncher.java, org, org/amnh,
+	  org/amnh/cbc, org/amnh/cbc/core,
+	  org/amnh/cbc/core/SimpleFileFilter.java,
+	  org/amnh/cbc/core/SplashScreen.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorEngine.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorGUI.java,
+	  org/amnh/cbc/geospatial,
+	  org/amnh/cbc/geospatial/SphericalFunctionEngine.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator,
+	  org/amnh/cbc/perpendicularDistanceCalculator/GCDWindow.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/IGCPWindow.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/PerpendicularDistanceCalculator.java,
+	  resources: Initial import of base classes before refactoring
+
+2007-02-02 18:25  pete
+
+	* branches, tags, .: Initial repository setup
+
