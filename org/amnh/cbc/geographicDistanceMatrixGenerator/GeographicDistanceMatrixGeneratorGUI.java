@@ -78,10 +78,10 @@ import org.amnh.cbc.geospatial.SphericalFunctionEngine;
  */
 public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements ActionListener, ItemListener, DocumentListener {
 	/* Eclipse generated serialVersionUID */
-	private static final long serialVersionUID = 7765098507171187206L;
+	private static final long serialVersionUID = 9133569752162494909L;
 
 	/* Current Version Number */
-	private static final String version = "1.2.0";
+	private static final String version = "1.2.1";
 	
 	/** \brief Instance of the VersionCheck class */
 	private VersionCheck versionCheck;
@@ -136,7 +136,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 		Thread splashThread = new Thread(SS, "SplashThread");
         splashThread.start();
         
-        versionCheck = new VersionCheck(this, version, "http://geospatial.amnh.org/open_source/gdmg/version", "http://geospatial.amnh.org/open_source/gdmg/download.php", 4000);
+        versionCheck = new VersionCheck(this, version, "http://geospatial.amnh.org/open_source/gdmg/version.php?query=true", "http://geospatial.amnh.org/open_source/gdmg/download.php", 4000);
         Thread versionThread = new Thread(versionCheck, "VersionThread");
         versionThread.start();
         

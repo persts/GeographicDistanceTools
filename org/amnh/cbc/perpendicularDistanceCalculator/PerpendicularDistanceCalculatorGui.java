@@ -72,7 +72,7 @@ public class PerpendicularDistanceCalculatorGui extends JFrame implements Action
 	private static final long serialVersionUID = 2032448473434530299L;
 
 	/* Current Version Number */
-	private static final String version = "1.2.0";
+	private static final String version = "1.2.1";
 
 	/** \brief Instance of the VersionCheck class */
 	private VersionCheck versionCheck;
@@ -127,7 +127,7 @@ public class PerpendicularDistanceCalculatorGui extends JFrame implements Action
         Thread splashThread = new Thread(SS, "SplashThread");
         splashThread.start();
         
-        versionCheck = new VersionCheck(this, version, "http://geospatial.amnh.org/open_source/pdc/version", "http://geospatial.amnh.org/open_source/pdc/download.php", 4000);
+        versionCheck = new VersionCheck(this, version, "http://geospatial.amnh.org/open_source/pdc/version.php?query=true", "http://geospatial.amnh.org/open_source/pdc/download.php", 4000);
         Thread versionThread = new Thread(versionCheck, "VersionThread");
         versionThread.start();
 		
