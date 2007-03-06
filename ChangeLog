@@ -1,3 +1,15 @@
+2007-03-06 13:39  pete
+
+	* org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorGUI.java,
+	  org/amnh/cbc/perpendicularDistanceCalculator/PerpendicularDistanceCalculatorGui.java,
+	  resources/SplashScreenGraphic-GDMG.jpg,
+	  resources/SplashScreenGraphic-PDC.jpg: -Small bug fix. Wrong URL
+	  version checking
+
+2007-03-02 20:57  pete
+
+	* ChangeLog: -Added changelog
+
 2007-03-02 14:18  pete
 
 	* ., resources/SplashScreenGraphic-GDMG.jpg,
