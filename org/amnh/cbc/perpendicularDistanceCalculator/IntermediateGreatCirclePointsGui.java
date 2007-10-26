@@ -88,7 +88,7 @@ public final class IntermediateGreatCirclePointsGui extends JFrame {
 		Color baseColor = new Color(234,234,234);
 		
 		setTitle("Intermediate Great Circle Points");
-		int frameWidth = 700;
+		int frameWidth = 750;
 		int frameHeight = 240;
         setResizable(false);  /* Not good programing but... */
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
