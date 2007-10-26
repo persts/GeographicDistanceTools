@@ -2,7 +2,6 @@
 ** File: About.java
 ** Author: Peter J. Ersts (ersts@amnh.org)
 ** Creation Date: 2007-02-07
-** Revision Date: 2007-02-07
 **
 ** Copyright (c) 2007, American Museum of Natural History. All rights reserved.
 ** 
@@ -73,8 +72,8 @@ public class About extends JDialog implements HyperlinkListener {
 		 "taken the form of code, constructive criticism, beta-testing and moral support. This "+
 		 "application implements Eric Albert's BrowserLauncher class, which is know not to work on many linux systems.<BR><BR>"+
 		 "Questions, comments can be posted on: <BR>"+
-		 "<a HREF=\"http://geospatial.amnh.org/open_source/gdmg/comments.php\">http://geospatial.amnh.org/gdmg/comments.php</a><BR><BR>"+
-		 "Bug reports and enhancements can be posted on: <a HREF=\"http://trac.geospatial.amnh.org/projects/javageodistancetools\">http://trac.geospatial.amnh.org/projects/javageodistancetools</a><BR><BR>"+
+		 "<a HREF=\"http://biodiversityinformatics.amnh.org/open_source/gdmg/comments.php\">http://biodiversityinformatics.amnh.org/gdmg/comments.php</a><BR><BR>"+
+		 "Bug reports and enhancements can be posted on: <a HREF=\"http://trac.biodiversityinformatics.amnh.org/projects/javageodistancetools\">http://trac.biodiversityinformatics.amnh.org/projects/javageodistancetools</a><BR><BR>"+
 		 "This work has been partially supported by NASA under award No. NAG5-8543 and NNG05G041G. "+
 		 "Additionally, this program was prepared by the the above author(s) under "+
 		 "award No. NA04AR4700191 and NA05SEC46391002 from the National Oceanic and Atmospheric "+

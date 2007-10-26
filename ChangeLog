@@ -1,10 +1,17 @@
+2007-10-26 
+	* org/amnh/cbc/perpendicularDistanceCalculator/PerpendicularDistanceCalculatorGui.java, 
+	  org/amnh/cbc/perpendicularDistanceCalculator/About.java,
+	  org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorGUI.java,
+	  org/amnh/cbc/geographicsDistanceMatrixGenerator/About.java,
+	  - Updated urls to reflect name change to Biodiversity Informatics Facility
+	  
 2007-03-06 13:39  pete
 
 	* org/amnh/cbc/geographicDistanceMatrixGenerator/GeographicDistanceMatrixGeneratorGUI.java,
 	  org/amnh/cbc/perpendicularDistanceCalculator/PerpendicularDistanceCalculatorGui.java,
 	  resources/SplashScreenGraphic-GDMG.jpg,
-	  resources/SplashScreenGraphic-PDC.jpg: -Small bug fix. Wrong URL
-	  version checking
+	  resources/SplashScreenGraphic-PDC.jpg: 
+	  -Small bug fix. Wrong URL in version checking
 
 2007-03-02 20:57  pete
 
