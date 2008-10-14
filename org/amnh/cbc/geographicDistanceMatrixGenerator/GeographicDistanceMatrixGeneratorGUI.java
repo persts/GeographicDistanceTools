@@ -80,7 +80,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 	private static final long serialVersionUID = 9133569752162494909L;
 
 	/* Current Version Number */
-	private static final String version = "1.2.2";
+	private static final String version = "1.2.3";
 	
 	/** \brief Instance of the VersionCheck class */
 	private VersionCheck versionCheck;

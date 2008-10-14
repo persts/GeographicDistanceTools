@@ -101,7 +101,10 @@ public class GeographicDistanceMatrixGeneratorEngine {
 				rowData = new String(lr.label);
 				for(int x = 0; x < rawData.size(); x++) {
 					LocationRecord lr2 = (LocationRecord)rawData.elementAt(x);
-					if(lr.isValid && lr2.isValid) {
+					if(x == y) {
+						rowData = rowData+"\t"+formatter.format(0.0);
+					}
+					else if(lr.isValid && lr2.isValid) {
 						distance = SFE.greatCircleDistance(lr.longitude, lr.latitude, lr2.longitude, lr2.latitude, units);
 						rowData = rowData+"\t"+formatter.format(distance);
 					}
@@ -123,7 +126,10 @@ public class GeographicDistanceMatrixGeneratorEngine {
 				rowData = new String(lr.label);
 				for(int x = 0; x <= y; x++) {
 					LocationRecord lr2 = (LocationRecord)rawData.elementAt(x);
-					if(lr.isValid && lr2.isValid) {
+					if(x == y) {
+						rowData = rowData+"\t"+formatter.format(0.0);
+					}
+					else if(lr.isValid && lr2.isValid) {
 						distance = SFE.greatCircleDistance(lr.longitude, lr.latitude, lr2.longitude, lr2.latitude, units);
 						rowData = rowData+"\t"+formatter.format(distance);
 					}
@@ -145,7 +151,10 @@ public class GeographicDistanceMatrixGeneratorEngine {
 				rowData = new String(lr.label);
 				for(int x = 0; x < y; x++) {
 					LocationRecord lr2 = (LocationRecord)rawData.elementAt(x);
-					if(lr.isValid && lr2.isValid) {
+					if(x == y) {
+						rowData = rowData+"\t"+formatter.format(0.0);
+					}
+					else if(lr.isValid && lr2.isValid) {
 						distance = SFE.greatCircleDistance(lr.longitude, lr.latitude, lr2.longitude, lr2.latitude, units);
 						rowData = rowData+"\t"+formatter.format(distance);
 					}
