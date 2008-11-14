@@ -40,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Vector;
+import java.util.Observable;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -51,35 +52,84 @@ import org.amnh.cbc.geospatial.SphericalFunctionEngine;
  * @author Peter J. Ersts
  *
  */
-public class GeographicDistanceMatrixGeneratorEngine {
+public class GeographicDistanceMatrixGeneratorEngine extends Observable implements Runnable {
 	/** \Brief a Vector to hold location records from the input file */
-	private Vector rawData; 
-	
+	private Vector<LocationRecord> rawData;
+	private Vector<String> outputMatrix;
+	private double cvSpheroidRadius;
+	private String cvUnits;
+	private String cvOutputFormat;
+	private boolean cvDataLoaded;
+	private ProgressDialog cvProgressBar;
 	/**
 	 * Constructor 
 	 * 
 	 */
 	public GeographicDistanceMatrixGeneratorEngine() {
-		rawData = new Vector();
+		rawData = new Vector<LocationRecord>();
+		outputMatrix = new Vector<String>();
+		cvSpheroidRadius = 0.0;
+		cvUnits = "";
+		cvOutputFormat = "";
+		cvDataLoaded = false;
+		cvProgressBar = null;
+	}
+	
+	/**
+	 * Init needed if using class as thread
+	 * 
+	 * @param theRadius			Radius of spherical representation of the earth.  Currently assumed to be in meters
+	 * @param theUnits			The unit of measurement for the resulting distances
+	 * @param theOutputFormat	The type of matrix to generate
+	 * @param thePBar			A progress dialog
+	 */
+	public void init( double theRadius, String theUnits, String theOutputFormat, ProgressDialog thePBar)
+	{
+		cvSpheroidRadius = theRadius;
+		cvUnits = theUnits;
+		cvOutputFormat = theOutputFormat;
+		cvProgressBar = thePBar;
+	}
+	
+	public void run()
+	{
+		if( cvDataLoaded && cvSpheroidRadius != 0.0 )
+		{
+			generateMatrix( cvSpheroidRadius, cvUnits, cvOutputFormat );
+		}
+		setChanged();
+		notifyObservers();
 	}
 	
 	/**
 	 * Generates a matrix representing the great circle distances for all pairwise combinations of
 	 * points stored in the rawData vector. If a coordinate is not a valid number, display ERROR in output
 	 * 
-	 * @param spheroidRadius			Radius of spherical representation of the earth.  Currently assumed to be in meeters
+	 * @param spheroidRadius			Radius of spherical representation of the earth.  Currently assumed to be in meters
 	 * @param units						The unit of measurement for the resulting distances
 	 * @param outputFormat				The type of matrix to generate
 	 * @return							A vector of string representing, where each string in the vector represents a row in the matrix
 	 */
-	public Vector generateMatrix(double spheroidRadius, String units, String outputFormat) {
+	public Vector<String> generateMatrix(double spheroidRadius, String units, String outputFormat) {
 		if( rawData.isEmpty())
 			return null;
+		
+		if( cvProgressBar != null)
+		{
+			cvProgressBar.setOverallMinimum( 0 );
+			cvProgressBar.setOverallMaximum( rawData.size() - 1 );
+			cvProgressBar.setOverallValue( 0 );
+			cvProgressBar.setRowMinimum( 0 );
+			cvProgressBar.setRowMaximum( rawData.size() - 1 );
+			cvProgressBar.setRowValue( 0 );
+			cvProgressBar.setVisible( true );
+			
+		}
 		
 		String rowData = null;
 		double distance = 0.0;
 		NumberFormat formatter;
-		Vector results = new Vector();
+		outputMatrix.clear();
 		SphericalFunctionEngine SFE = new SphericalFunctionEngine(spheroidRadius);
 		
 		if(units.equalsIgnoreCase("RAD") || units.equalsIgnoreCase("DEG"))
@@ -93,14 +143,16 @@ public class GeographicDistanceMatrixGeneratorEngine {
 		if(outputFormat.equalsIgnoreCase("FULL_MATRIX")) {
 			rowData = new String("");
 			for(int x = 0; x < rawData.size(); x++) {
-				rowData = rowData+"\t"+((LocationRecord)rawData.elementAt(x)).label;
+				rowData = rowData+"\t"+rawData.elementAt(x).label;
 			}
-			results.add(rowData);
-			for(int y = 0; y < rawData.size(); y++) {	
-				LocationRecord lr = (LocationRecord)rawData.elementAt(y);
-				rowData = new String(lr.label);
+			outputMatrix.add(rowData);
+			for(int y = 0; y < rawData.size(); y++) {
+				if( cvProgressBar != null) { cvProgressBar.setOverallValue( y ); }
+				LocationRecord lr = rawData.elementAt(y);
+				rowData = lr.label;
 				for(int x = 0; x < rawData.size(); x++) {
-					LocationRecord lr2 = (LocationRecord)rawData.elementAt(x);
+					if( cvProgressBar != null) { cvProgressBar.setRowValue( x ); }
+					LocationRecord lr2 = rawData.elementAt(x);
 					if(x == y) {
 						rowData = rowData+"\t"+formatter.format(0.0);
 					}
@@ -111,7 +163,7 @@ public class GeographicDistanceMatrixGeneratorEngine {
 					else
 						rowData = rowData+"\tERROR";
 				}
-				results.add(rowData);
+				outputMatrix.add(rowData);
 			}
 		}
 		
@@ -120,11 +172,14 @@ public class GeographicDistanceMatrixGeneratorEngine {
 			for(int x = 0; x < rawData.size(); x++) {
 				rowData = rowData+"\t"+((LocationRecord)rawData.elementAt(x)).label;
 			}
-			results.add(rowData);
-			for(int y = 0; y < rawData.size(); y++) {	
+			outputMatrix.add(rowData);
+			for(int y = 0; y < rawData.size(); y++) {
+				if( cvProgressBar != null) { cvProgressBar.setOverallValue( y ); }
 				LocationRecord lr = (LocationRecord)rawData.elementAt(y);
-				rowData = new String(lr.label);
+				rowData = lr.label;
+				if( cvProgressBar != null) { cvProgressBar.setRowMaximum( y ); }
 				for(int x = 0; x <= y; x++) {
+					if( cvProgressBar != null) { cvProgressBar.setRowValue( x ); }
 					LocationRecord lr2 = (LocationRecord)rawData.elementAt(x);
 					if(x == y) {
 						rowData = rowData+"\t"+formatter.format(0.0);
@@ -136,7 +191,7 @@ public class GeographicDistanceMatrixGeneratorEngine {
 					else
 						rowData = rowData+"\tERROR";
 				}
-				results.add(rowData);
+				outputMatrix.add(rowData);
 			}
 		}
 		
@@ -145,11 +200,14 @@ public class GeographicDistanceMatrixGeneratorEngine {
 			for(int x = 0; x < rawData.size()-1; x++) {
 				rowData = rowData+"\t"+((LocationRecord)rawData.elementAt(x)).label;
 			}
-			results.add(rowData);
+			outputMatrix.add(rowData);
 			for(int y = 1; y < rawData.size(); y++) {	
+				if( cvProgressBar != null) { cvProgressBar.setOverallValue( y ); }
 				LocationRecord lr = (LocationRecord)rawData.elementAt(y);
-				rowData = new String(lr.label);
+				rowData = lr.label;
+				if( cvProgressBar != null) { cvProgressBar.setRowMaximum( y-1 ); }
 				for(int x = 0; x < y; x++) {
+					if( cvProgressBar != null) { cvProgressBar.setRowValue( x ); }
 					LocationRecord lr2 = (LocationRecord)rawData.elementAt(x);
 					if(x == y) {
 						rowData = rowData+"\t"+formatter.format(0.0);
@@ -161,25 +219,27 @@ public class GeographicDistanceMatrixGeneratorEngine {
 					else
 						rowData = rowData+"\tERROR";
 				}
-				results.add(rowData);
+				outputMatrix.add(rowData);
 			}
 		}
-		
-		return results;		
+
+		if( cvProgressBar != null) { cvProgressBar.setVisible( false ); }
+		return outputMatrix;		
 	}
 
 	/**
 	 * Opens the input file, and check to make sure that each line only has three tokens.  The expected format of the input file is
-	 * Lable, Latitude, Longitude.
+	 * Label, Latitude, Longitude.
 	 * 
 	 * @param mainWindow		The main application window
 	 * @param filename			The name of the input file to load
 	 * @return					True or false on successful load
 	 */
 	public boolean loadFromFile(JFrame mainWindow, String filename) {
+		cvDataLoaded = false;
 		BufferedReader inputStream;
         try {
-        	rawData = new Vector();
+        	rawData = new Vector<LocationRecord>();
             inputStream = new BufferedReader(new FileReader(filename));
             String[] tokens;
             String inputLine = inputStream.readLine();
@@ -203,6 +263,13 @@ public class GeographicDistanceMatrixGeneratorEngine {
         	return false;
         }	
         
+        cvDataLoaded = true;
 		return true;
+	}
+	
+	public Vector<String> matrix()
+	{
+		//need to know if the thread is still running
+		return outputMatrix;
 	}
 }

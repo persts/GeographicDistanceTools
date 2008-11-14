@@ -64,16 +64,16 @@ public class About extends JDialog implements HyperlinkListener {
 	 * @param modal		Boolean to indicate if this dialog should be modal
 	 */
 	About(JFrame parent, String version) {
-		String messageText = "<HTML><BODY>"+
+		String messageText = "<HTML><BODY style=\"font-size: 9px;\">"+
 		 "Version "+ version +" of the Geographic Distance Matrix Generator "+
 		 "written by Peter J. Ersts, Project Specialist with the <a HREF=\"http://cbc.amnh.org\">Center for "+
 		 "Biodiversity and Conservation</a> at the <a HREF=\"http://amnh.org\">American Museum of Natural History</a>. "+
-		 "Eric Albert, Ned Horning, and Sergios-Orestis Kolokotronis should be acknowledged for their contributions which have "+
-		 "taken the form of code, constructive criticism, beta-testing and moral support. This "+
+		 "<br><br>Ned Horning, Sergios-Orestis Kolokotronis, and Eric Albert should be acknowledged for their contributions which have "+
+		 "taken the form of code, constructive criticism, beta-testing and moral support. Elena Fumagalli help to identify some issues with large datasets. This "+
 		 "application implements Eric Albert's BrowserLauncher class, which is know not to work on many linux systems.<BR><BR>"+
 		 "Questions, comments can be posted on: <BR>"+
 		 "<a HREF=\"http://biodiversityinformatics.amnh.org/open_source/gdmg/comments.php\">http://biodiversityinformatics.amnh.org/gdmg/comments.php</a><BR><BR>"+
-		 "Bug reports and enhancements can be posted on: <a HREF=\"http://trac.biodiversityinformatics.amnh.org/projects/javageodistancetools\">http://trac.biodiversityinformatics.amnh.org/projects/javageodistancetools</a><BR><BR>"+
+		 "<BR><BR>"+
 		 "This work has been partially supported by NASA under award No. NAG5-8543 and NNG05G041G. "+
 		 "Additionally, this program was prepared by the the above author(s) under "+
 		 "award No. NA04AR4700191 and NA05SEC46391002 from the National Oceanic and Atmospheric "+
@@ -81,7 +81,7 @@ public class About extends JDialog implements HyperlinkListener {
 		 "conclusions, and recommendations are those of the author(s) and do not "+
 		 "necessarily reflect the views of the National Oceanic and Atmospheric "+
 		 "Administration or the Department of Commerce.<BR></BODY></HTML>";
-		setSize(435,600);
+		setSize(450,600);
 		setTitle("About");
 		
 		getContentPane().setBackground(Color.WHITE);

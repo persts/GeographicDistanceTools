@@ -40,7 +40,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ActionListener;
 
+import java.lang.Object;
+
 import java.util.Vector;
+import java.util.Observer;
+import java.util.Observable;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -75,7 +80,7 @@ import org.amnh.cbc.geospatial.SphericalFunctionEngine;
  * @author Peter J. Ersts
  *
  */
-public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements ActionListener, ItemListener, DocumentListener {
+public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements ActionListener, ItemListener, DocumentListener, Observer {
 	/* Eclipse generated serialVersionUID */
 	private static final long serialVersionUID = 9133569752162494909L;
 
@@ -102,7 +107,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 										{"nautical mi", "nm"},
 										{"radians", "rad"},
 										{"degrees", "deg"}};
-	/** \brief Array hlding the current hard coded speriod radi */
+	/** \brief Array holding the current hard coded spheriod radius */
 	private String spheroids[][] = {{"WGS84","6378137"},
 			 						{"User Defined", "0"}}; /* User Defined must always be last */
 
@@ -121,6 +126,7 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
 	private JRadioButton fullMatrix;
 	private JRadioButton lowerTriangular;
 	private JRadioButton lowerTriangularDiagonal;
+	private ProgressDialog pBar;
 	
 	/*
 	 * Constructor and Required Listener Methods
@@ -144,6 +150,9 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
          */
         Dimension defaultDimension = new Dimension(120, 25);
         matrixGenerator = new GeographicDistanceMatrixGeneratorEngine();
+        matrixGenerator.addObserver( this );
+        pBar = new ProgressDialog();
+        
         fileLoaded = false;
         eventFireControl = null;
         spheroidRadiusActionCount = 0;
@@ -381,6 +390,23 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
     	}
     }
     
+    /**
+     * Required method
+     * Used to alert us that the engine thread has finished running
+     */
+    public void update( Observable obs, Object x)
+    {
+    	browseFileButton.setEnabled( true );
+    	exportButton.setEnabled( true );
+    	fullMatrix.setEnabled( true );
+    	lowerTriangular.setEnabled( true );
+    	lowerTriangularDiagonal.setEnabled( true );
+    	spheroidRadius.setEnabled( true );							
+    	spheroidList.setEnabled( true );
+    	outputDistanceUnits.setEnabled( true );
+    	
+    	displayResults();
+    }
     
     /*
      * Additional Methods
@@ -390,6 +416,15 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
     /**
      * 
      */
+    private void displayResults()
+    {
+    	Vector<String> matrix;
+    	matrix = matrixGenerator.matrix();
+  		matrixDisplay.setText("");
+  		for (int x = 0; x < matrix.size(); x++)
+  			matrixDisplay.append(matrix.elementAt(x)+"\n");
+    }
+    
     private boolean exportResults() {
 		if(matrixDisplay.getText().equals(""))
 			return false;
@@ -426,10 +461,18 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
     		JOptionPane.showMessageDialog(this, "Error [Parameter Error] Your Spheroid Radius is unrealalistically small","Error", JOptionPane.WARNING_MESSAGE);
     		return false;
     	}
-    	Vector matrix = matrixGenerator.generateMatrix(Double.parseDouble(spheroidRadius.getText()),distanceUnits[outputDistanceUnits.getSelectedIndex()][1], matrixDisplayOptionsGroup.getSelection().getActionCommand()); /* Ignore NumberFormatException because number should be valid by this point */
-    	matrixDisplay.setText("");
-    	for (int x = 0; x < matrix.size(); x++)
-    		matrixDisplay.append((String)matrix.elementAt(x)+"\n");
+    	browseFileButton.setEnabled( false );
+    	exportButton.setEnabled( false );
+    	fullMatrix.setEnabled( false );
+    	lowerTriangular.setEnabled( false );
+    	lowerTriangularDiagonal.setEnabled( false );
+    	spheroidRadius.setEnabled( false );							
+    	spheroidList.setEnabled( false );
+    	outputDistanceUnits.setEnabled( false );
+    	
+    	matrixGenerator.init(Double.parseDouble(spheroidRadius.getText()),distanceUnits[outputDistanceUnits.getSelectedIndex()][1], matrixDisplayOptionsGroup.getSelection().getActionCommand(), pBar );
+    	Thread workerThread = new Thread( matrixGenerator );
+    	workerThread.start();
     	
     	return true;
     }
