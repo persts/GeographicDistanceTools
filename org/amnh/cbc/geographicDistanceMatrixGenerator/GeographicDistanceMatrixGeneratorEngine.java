@@ -32,7 +32,10 @@
 **/
 package org.amnh.cbc.geographicDistanceMatrixGenerator;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -42,9 +45,11 @@ import java.text.NumberFormat;
 import java.util.Vector;
 import java.util.Observable;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import org.amnh.cbc.core.SimpleFileFilter;
 import org.amnh.cbc.geospatial.SphericalFunctionEngine;
 
 /**
@@ -100,6 +105,26 @@ public class GeographicDistanceMatrixGeneratorEngine extends Observable implemen
 		setChanged();
 		notifyObservers();
 	}
+	
+	public boolean exportResults( String theFilename ) {
+		if( 0 == outputMatrix.size() )
+			return false;
+
+    	try {
+    		BufferedWriter outputStream = null;
+  			outputStream = new BufferedWriter(new FileWriter(new File( theFilename )));
+    		
+  			for (int x = 0; x < outputMatrix.size(); x++)
+  				outputStream.write(outputMatrix.elementAt(x)+"\n");
+    		       		
+    		outputStream.close();
+    	}
+    	catch (IOException e) {
+    		return false;
+    	}
+    	
+    	return true;
+    }
 	
 	/**
 	 * Generates a matrix representing the great circle distances for all pairwise combinations of
@@ -272,4 +297,10 @@ public class GeographicDistanceMatrixGeneratorEngine extends Observable implemen
 		//need to know if the thread is still running
 		return outputMatrix;
 	}
+	
+	public int matrixSize()
+	{
+		return outputMatrix.size();
+	}
+
 }

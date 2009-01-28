@@ -418,36 +418,34 @@ public class GeographicDistanceMatrixGeneratorGUI extends JFrame implements Acti
      */
     private void displayResults()
     {
-    	Vector<String> matrix;
-    	matrix = matrixGenerator.matrix();
-  		matrixDisplay.setText("");
-  		for (int x = 0; x < matrix.size(); x++)
-  			matrixDisplay.append(matrix.elementAt(x)+"\n");
+    	if( matrixGenerator.matrixSize() > 100 )
+    	{
+    		matrixDisplay.append( "Matrix too large to display, click the export button to save your matrix." );
+    	}
+    	else
+    	{
+    		Vector<String> 	matrix = matrixGenerator.matrix();
+    		matrixDisplay.setText("");
+    		for (int x = 0; x < matrix.size(); x++)
+    			matrixDisplay.append(matrix.elementAt(x)+"\n");
+    	}
     }
     
     private boolean exportResults() {
-		if(matrixDisplay.getText().equals(""))
-			return false;
-
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.addChoosableFileFilter(new SimpleFileFilter(".txt", "Text Files"));
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if(fileChooser.showSaveDialog(this) != JFileChooser.CANCEL_OPTION) {
-        	try {
-        		BufferedWriter outputStream = null;
+        	String filename;
         		if(fileChooser.getSelectedFile().getName().toLowerCase().endsWith(".txt"))
-        			outputStream = new BufferedWriter(new FileWriter(fileChooser.getSelectedFile()));
+        			filename = fileChooser.getSelectedFile().getAbsolutePath();
         		else
-        			outputStream = new BufferedWriter(new FileWriter(new File(fileChooser.getSelectedFile().getAbsolutePath()+".txt")));
+        			filename = fileChooser.getSelectedFile().getAbsolutePath()+".txt";
         		
-        		outputStream.write(matrixDisplay.getText());
-        		       		
-        		outputStream.close();
-        	}
-        	catch (IOException e) {
-        		JOptionPane.showMessageDialog(this, "An error occurred while writing to the export file","Write Error", JOptionPane.ERROR_MESSAGE);
-        		return false;
-        	}
+        		if( matrixGenerator.exportResults( filename) )
+        			JOptionPane.showMessageDialog(this, "Export complete!","Export Stats", JOptionPane.INFORMATION_MESSAGE);
+        		else
+        			JOptionPane.showMessageDialog(this, "Error [Export Error] An error was encountered while writing the matrix to a file","Error", JOptionPane.WARNING_MESSAGE);
         }
     	return true;
     }
