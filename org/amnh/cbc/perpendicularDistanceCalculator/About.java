@@ -72,7 +72,6 @@ public class About extends JDialog implements HyperlinkListener {
  							"beta-testing and moral support. This application implements Eric Albert's BrowserLauncher class, which is know not to work on many linux systems.<BR><BR>"+
  							"Questions, comments can be posted on: <BR>"+
  							 "<a HREF=\"http://biodiversityinformatics.amnh.org/open_source/gdmg/comments.php\">http://biodiversityinformatics.amnh.org/gdmg/comments.php</a><BR><BR>"+
- 							 "Bug reports and enhancements can be posted on: <a HREF=\"http://trac.biodiversityinformatics.amnh.org/projects/javageodistancetools\">http://trac.biodiversityinformatics.amnh.org/projects/javageodistancetools</a><BR><BR>"+
  							"This work has been partially supported by NASA under award No. NAG5-8543. "+
  							"Additionally, this program was prepared by the the above author(s) under "+
  							"award No. NA04AR4700191 from the National Oceanic and Atmospheric "+
