@@ -1,6 +1,6 @@
 GeographicDistanceTools
 ================
-This repo has been created for archival purposes to replace an SVN archive that is no longer online and accessible. Thiese tools are no longer being actively developed.
+This repo has been created for archival purposes to replace an SVN archive that is no longer online and accessible. These tools are no longer being actively developed or supported.
 
 ## What is the Geographic Distance Matrix Generator?
 The Geographic Distance Matrix Generator is a platform-independent Java application that implements the same powerful suite of spherical functions as the Perpendicular Distance Calculator to compute all pair wise distances from a simple list of geographic coordinates. http://biodiversityinformatics.amnh.org/open_source/gdmg/
